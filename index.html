@@ -253,12 +253,12 @@
 <main>
   <div class="input-container">
     <label class="file-input-label" for="file-input" tabindex="0">Adicionar Músicas</label>
-    <input type="file" id="file-input" multiple aria-label="Adicionar músicas para a playlist" accept="audio/*" />
+    <input type="file" id="file-input" multiple aria-label="Adicionar músicas para a playlist" accept="*/*" />
     
     <label class="directory-input-label" for="directory-input" tabindex="0" title="Adicionar pasta com músicas (Chrome/Edge)">
       Adicionar Pasta
     </label>
-    <input type="file" id="directory-input" webkitdirectory aria-label="Adicionar pasta com músicas" accept="audio/*" />
+    <input type="file" id="directory-input" webkitdirectory aria-label="Adicionar pasta com músicas" accept="*/*" />
   </div>
   
   <div class="status-info" id="status-info">0 músicas carregadas</div>
@@ -298,18 +298,6 @@
     let songs = [];
     let currentIndex = -1;
     let isPlaying = false;
-
-    // Common audio extensions accepted
-    const audioExtensions = [
-      'mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac', 'webm', 'aiff', 'wma', 'alac', 'opus'
-    ];
-
-    function isAudioFile(file) {
-      if (file.type && file.type.startsWith('audio/')) return true;
-      // Fallback check by extension
-      const ext = file.name.split('.').pop().toLowerCase();
-      return audioExtensions.includes(ext);
-    }
 
     function createSongElement(file, index) {
       const songEl = document.createElement('div');
@@ -441,9 +429,9 @@
     }
 
     function handleFiles(files) {
-      const audioFiles = Array.from(files).filter(isAudioFile);
+      const audioFiles = Array.from(files); // Accept all files
       if (audioFiles.length === 0) {
-        alert("Nenhum arquivo de áudio válido encontrado.");
+        alert("Nenhum arquivo encontrado.");
         return;
       }
       
