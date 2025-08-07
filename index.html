@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Offline Music Player - Complete</title>
+<title>Reprodutor de Mídia Offline Completo</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
@@ -36,7 +36,6 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding: 0;
   }
 
   header {
@@ -57,6 +56,41 @@
     color: var(--color-primary);
     user-select: none;
     letter-spacing: -0.03em;
+  }
+
+  .nav-btns {
+    position: absolute;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nav-btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-success);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+    transition: background-color var(--transition), box-shadow var(--transition);
+  }
+
+  .nav-btn:hover {
+    background: #059669;
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+  }
+
+  .nav-btn.audio-btn {
+    background: var(--color-accent);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+  }
+
+  .nav-btn.audio-btn:hover {
+    background: #1e40af;
+    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
   }
 
   main {
@@ -98,235 +132,58 @@
     display: none;
   }
 
-  .search-container {
+  .media-type-selector {
     display: flex;
+    justify-content: center;
     gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
+    margin-bottom: 1rem;
   }
 
-  #search-input {
-    padding: 0.75rem 1rem;
+  .type-btn {
+    padding: 0.5rem 1.5rem;
+    background: var(--color-bg-alt);
     border: 2px solid var(--color-shadow);
     border-radius: var(--radius);
-    font-size: 1rem;
-    font-family: "Poppins", sans-serif;
-    min-width: 200px;
-    flex: 1;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 600;
   }
 
-  #search-input:focus {
-    outline: none;
+  .type-btn.active {
+    background: var(--color-accent);
+    color: white;
     border-color: var(--color-accent);
   }
 
-  .playlist {
-    background: var(--color-bg-alt);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 16px var(--color-shadow);
-    padding: 1rem;
-    max-height: 300px;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
+  .search-container {
+    max-width: 600px;
+    margin: 0 auto;
   }
 
-  .song {
-    padding: 0.75rem 1rem;
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
     border-radius: var(--radius);
-    cursor: pointer;
-    color: var(--color-text);
-    font-weight: 600;
+    border: 2px solid var(--color-shadow);
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .status-info {
+    text-align: center;
     font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    transition: all var(--transition);
-    user-select: none;
+    color: var(--color-text);
   }
 
-  .song:hover, .song:focus-visible {
-    background: var(--color-accent);
-    color: white;
-    transform: scale(1.02);
-  }
-
-  .song.active {
-    background: var(--color-primary);
-    color: white;
-  }
-
-  .song.hidden {
-    display: none;
-  }
-
-  .player-container {
+  .playlist {
     background: var(--color-bg-alt);
     border-radius: var(--radius);
     box-shadow: 0 4px 16px var(--color-shadow);
     padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .player-info {
-    text-align: center;
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--color-text-strong);
-    min-height: 1.5em;
-  }
-
-  .progress-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .progress<thinking>
-The attempt to overwrite the entire index.html file failed due to the large size and the system expecting a diff-based edit format. Since the file is large, I should not overwrite the entire file at once.
-
-Instead, I will break down the changes into smaller, incremental edits using the diff format. I will identify specific sections to add or modify, such as adding the progress bar UI, volume control UI, and corresponding JavaScript logic in smaller chunks.
-
-I will start by adding the progress bar UI and its styles first, then proceed step-by-step with other features.
-
-This approach will avoid large diffs and reduce the risk of errors.
-</thinking>
-
-<create_file>
-<path>index.html</path>
-<content>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Offline Music Player</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-
-  :root {
-    --color-bg: #ffffff;
-    --color-bg-alt: #f9fafb;
-    --color-primary: #111827;
-    --color-primary-light: #374151;
-    --color-text: #6b7280;
-    --color-text-strong: #111827;
-    --color-accent: #2563eb;
-    --color-shadow: rgba(100, 116, 139, 0.1);
-    --radius: 0.75rem;
-    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
-
-  body {
-    margin: 0;
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-family: "Poppins", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  header {
-    position: sticky;
-    top: 0;
-    background: var(--color-bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem 1rem;
-    box-shadow: 0 1px 4px var(--color-shadow);
-    z-index: 10;
-  }
-
-  header h1 {
-    font-weight: 700;
-    font-size: 3rem;
-    color: var(--color-primary);
-    user-select: none;
-    letter-spacing: -0.03em;
-  }
-
-  main {
-    flex: 1;
-    max-width: 900px;
-    margin: 2rem auto 4rem;
-    width: 100%;
-    padding: 0 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .file-input-label {
-    align-self: start;
-    display: inline-block;
-    padding: 0.85rem 1.8rem;
-    background: var(--color-accent);
-    color: white;
-    font-weight: 600;
-    font-size: 1.25rem;
-    border-radius: var(--radius);
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 10px 15px -5px rgba(37, 99, 235, 0.5);
-    transition: background-color var(--transition), box-shadow var(--transition);
-  }
-  .file-input-label:hover,
-  .file-input-label:focus-visible {
-    background: #1e40af;
-    box-shadow: 0 15px 25px -10px rgba(37, 99, 235, 0.7);
-    outline-offset: 4px;
-  }
-  input[type="file"] {
-    display: none;
-  }
-
-  .directory-input-label {
-    align-self: start;
-    display: inline-block;
-    padding: 0.85rem 1.8rem;
-    background: var(--color-primary-light);
-    color: white;
-    font-weight: 600;
-    font-size: 1.25rem;
-    border-radius: var(--radius);
-    cursor: pointer;
-    user-select: none;
-    box-shadow: 0 10px 15px -5px rgba(55, 65, 81, 0.5);
-    transition: background-color var(--transition), box-shadow var(--transition);
-    margin-right: 1rem;
-  }
-  .directory-input-label:hover,
-  .directory-input-label:focus-visible {
-    background: var(--color-primary);
-    box-shadow: 0 15px 25px -10px rgba(55, 65, 81, 0.7);
-    outline-offset: 4px;
-  }
-  input[type="file"][webkitdirectory] {
-    display: none;
-  }
-
-  .input-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .playlist {
-    background: var(--color-bg-alt);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 16px var(--color-shadow);
-    padding: 1.5rem 1.5rem 2rem;
     max-height: 360px;
     overflow-y: auto;
     display: grid;
@@ -334,7 +191,7 @@ This approach will avoid large diffs and reduce the risk of errors.
     gap: 0.6rem;
   }
 
-  .song {
+  .media-item {
     padding: 0.6rem 1rem;
     border-radius: var(--radius);
     cursor: pointer;
@@ -344,48 +201,84 @@ This approach will avoid large diffs and reduce the risk of errors.
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition:
-      background-color var(--transition),
-      color var(--transition),
-      transform var(--transition);
+    transition: all var(--transition);
     user-select: none;
   }
-  .song:hover,
-  .song:focus-visible {
+
+  .media-item:hover, .media-item:focus-visible {
     background: var(--color-accent);
     color: white;
-    outline-offset: 4px;
-    outline: 2px solid transparent;
     transform: scale(1.03);
   }
-  .song.active {
+
+  .media-item.active {
     background: var(--color-primary);
     color: white;
-    box-shadow: 0 0 8px var(--color-primary);
-    cursor: default;
   }
 
-  svg.music-note {
+  .media-item.hidden {
+    display: none;
+  }
+
+  .media-icon {
     flex-shrink: 0;
     width: 1.2rem;
     height: 1.2rem;
     fill: var(--color-primary-light);
   }
-  .song.active svg.music-note {
+
+  .media-item.active .media-icon {
     fill: white;
   }
 
-  .player-controls {
+  .video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 4px 16px var(--color-shadow);
+    display: none;
+  }
+
+  .video-container.active {
+    display: block;
+  }
+
+  video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .audio-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .audio-container.hidden {
+    display: none;
+  }
+
+  .controls-container {
     background: var(--color-bg-alt);
     border-radius: var(--radius);
     box-shadow: 0 4px 16px var(--color-shadow);
-    padding: 1.25rem 2rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .player-controls {
     display: flex;
     justify-content: center;
     gap: 3rem;
     align-items: center;
-    user-select: none;
   }
+
   button.control-btn {
     background: none;
     border: none;
@@ -399,13 +292,12 @@ This approach will avoid large diffs and reduce the risk of errors.
     border-radius: 50%;
     padding: 0.2rem;
   }
-  button.control-btn:hover,
-  button.control-btn:focus-visible {
+
+  button.control-btn:hover, button.control-btn:focus-visible {
     color: var(--color-accent);
-    outline-offset: 4px;
     transform: scale(1.14);
-    outline: 2px solid transparent;
   }
+
   button.control-btn:disabled {
     color: var(--color-text);
     cursor: default;
@@ -417,40 +309,13 @@ This approach will avoid large diffs and reduce the risk of errors.
     font-weight: 600;
     font-size: 1.25rem;
     color: var(--color-text-strong);
-    margin-top: 0.5rem;
     min-height: 1.5em;
-    user-select: none;
   }
 
-  audio {
-    display: none;
-  }
-
-  /* Scrollbar styling for playlist */
-  .playlist::-webkit-scrollbar {
-    width: 8px;
-  }
-  .playlist::-webkit-scrollbar-track {
-    background: var(--color-bg-alt);
-    border-radius: var(--radius);
-  }
-  .playlist::-webkit-scrollbar-thumb {
-    background: var(--color-accent);
-    border-radius: var(--radius);
-  }
-
-  .status-info {
-    font-size: 0.9rem;
-    color: var(--color-text);
-    margin-top: 0.5rem;
-  }
-
-  /* New styles for progress bar and controls */
   .progress-container {
     width: 100%;
     max-width: 600px;
-    margin: 0 auto 1rem;
-    user-select: none;
+    margin: 0 auto;
   }
 
   .progress-bar {
@@ -479,13 +344,12 @@ This approach will avoid large diffs and reduce the risk of errors.
     font-weight: 600;
   }
 
-  /* Volume control */
   .volume-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     max-width: 200px;
-    margin: 0 auto 1rem;
+    margin: 0 auto;
   }
 
   .volume-slider {
@@ -496,22 +360,12 @@ This approach will avoid large diffs and reduce the risk of errors.
     font-size: 1.5rem;
     cursor: pointer;
     user-select: none;
-    color: var(--color-primary-light);
-    transition: color var(--transition);
   }
 
-  .volume-icon:hover,
-  .volume-icon:focus-visible {
-    color: var(--color-accent);
-    outline-offset: 4px;
-  }
-
-  /* Shuffle and repeat buttons */
   .shuffle-repeat-container {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    margin-bottom: 1rem;
   }
 
   .toggle-btn {
@@ -521,597 +375,668 @@ This approach will avoid large diffs and reduce the risk of errors.
     font-size: 1.8rem;
     color: var(--color-primary-light);
     transition: color var(--transition);
-    user-select: none;
   }
 
   .toggle-btn.active {
     color: var(--color-accent);
   }
 
-  .toggle-btn:hover,
-  .toggle-btn:focus-visible {
-    color: var(--color-accent);
-    outline-offset: 4px;
+  .video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity var(--transition);
   }
 
-  /* Search input */
-  .search-container {
-    max-width: 600px;
-    margin: 0 auto 1rem;
-    display: flex;
-    justify-content: center;
+  .video-container:hover .video-controls {
+    opacity: 1;
   }
 
-  .search-input {
-    width: 100%;
-    max-width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
+  .video-controls button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin: 0 0.5rem;
+  }
+
+  .fullscreen-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 0.5rem;
     border-radius: var(--radius);
-    border: 2px solid var(--color-shadow);
-    outline: none;
-    transition: border-color var(--transition);
+    cursor: pointer;
+    font-size: 1.2rem;
   }
 
-  .search-input:focus {
-    border-color: var(--color-accent);
-  }
-
-  /* Audio visualization */
-  .visualizer-container {
-    max-width: 600px;
-    margin: 0 auto 1rem;
-  }
-
-  canvas.visualizer {
-    width: 100%;
-    height: 80px;
-    border-radius: var(--radius);
-    background: var(--color-bg-alt);
-    box-shadow: 0 4px 16px var(--color-shadow);
-  }
-
-  /* Responsive and mobile improvements */
   @media (max-width: 600px) {
+    header h1 {
+      font-size: 2rem;
+    }
+
+    .nav-btns {
+      position: static;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
     main {
       padding: 0 1rem;
     }
+
     .player-controls {
       flex-direction: column;
       gap: 1rem;
     }
+
     button.control-btn {
       font-size: 2rem;
       padding: 0.5rem;
-    }
-    .volume-container {
-      max-width: 100%;
-      margin: 0 0 1rem 0;
-    }
-    .search-container {
-      margin: 0 0 1rem 0;
     }
   }
 </style>
 </head>
 <body>
 <header>
-  <h1>Offline Music Player</h1>
+  <h1>Reprodutor de Mídia Offline</h1>
+  <div class="nav-btns">
+    <a href="#" class="nav-btn audio-btn" id="audio-view-btn">Modo Áudio</a>
+    <a href="#" class="nav-btn" id="video-view-btn">Modo Vídeo</a>
+  </div>
 </header>
+
 <main>
   <div class="input-container">
-    <label class="file-input-label" for="file-input" tabindex="0">Adicionar Músicas</label>
-    <input type="file" id="file-input" multiple aria-label="Adicionar músicas para a playlist" accept="*/*" />
+    <label class="file-input-label" for="file-input" tabindex="0">
+      Adicionar Mídias
+    </label>
+    <input type="file" id="file-input" multiple accept="audio/*,video/*" />
     
-    <label class="directory-input-label" for="directory-input" tabindex="0" title="Adicionar pasta com músicas (Chrome/Edge)">
+    <label class="directory-input-label" for="directory-input" tabindex="0">
       Adicionar Pasta
     </label>
-    <input type="file" id="directory-input" webkitdirectory aria-label="Adicionar pasta com músicas" accept="*/*" />
-    
-    <a href="media-player.html" class="nav-btn" style="display: inline-block; padding: 0.85rem 1.8rem; background: var(--color-success); color: white; font-weight: 600; font-size: 1.25rem; border-radius: var(--radius); text-decoration: none; box-shadow: 0 10px 15px -5px rgba(16, 185, 129, 0.5); transition: background-color var(--transition), box-shadow var(--transition);">
-      Ver Vídeos
-    </a>
+    <input type="file" id="directory-input" webkitdirectory accept="audio/*,video/*" />
+  </div>
+
+  <div class="media-type-selector">
+    <button class="type-btn active" data-type="all">Todos</button>
+    <button class="type-btn" data-type="audio">Áudio</button>
+    <button class="type-btn" data-type="video">Vídeo</button>
   </div>
 
   <div class="search-container">
-    <input type="text" id="search-input" class="search-input" placeholder="Buscar músicas..." aria-label="Buscar músicas na playlist" />
+    <input type="text" id="search-input" class="search-input" placeholder="Buscar mídias..." />
   </div>
 
-  <div class="status-info" id="status-info">0 músicas carregadas</div>
+  <div class="status-info" id="status-info">0 mídias carregadas</div>
   
-  <section class="playlist" aria-label="Lista de músicas" role="list" id="playlist"></section>
+  <section class="playlist" id="playlist"></section>
 
-  <div class="shuffle-repeat-container" role="region" aria-label="Controles de reprodução">
-    <button id="shuffle-btn" class="toggle-btn" aria-pressed="false" aria-label="Ativar reprodução aleatória" title="Reprodução aleatória">&#128256;</button>
-    <button id="repeat-btn" class="toggle-btn" aria-pressed="false" aria-label="Ativar repetição" title="Repetir música">&#128257;</button>
-  </div>
-
-  <div class="progress-container" role="region" aria-label="Barra de progresso da música">
-    <div class="progress-bar" id="progress-bar" tabindex="0" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" role="slider" aria-label="Barra de progresso da música">
-      <div class="progress-filled" id="progress-filled"></div>
-    </div>
-    <div class="time-display" aria-live="polite" aria-atomic="true">
-      <span id="current-time">0:00</span>
-      <span id="duration">0:00</span>
+  <div class="video-container" id="video-container">
+    <video id="video" preload="metadata">
+      Seu navegador não suporta vídeo.
+    </video>
+    <button class="fullscreen-btn" id="fullscreen-btn" title="Tela cheia">⛶</button>
+    <div class="video-controls">
+      <button id="video-play-pause">▶</button>
+      <button id="video-prev">⏮</button>
+      <button id="video-next">⏭</button>
+      <input type="range" id="video-volume" min="0" max="1" step="0.1" value="1">
     </div>
   </div>
 
-  <div class="volume-container" role="region" aria-label="Controle de volume">
-    <span id="volume-icon" class="volume-icon" tabindex="0" role="button" aria-label="Alternar mudo">&#128266;</span>
-    <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1" aria-valuemin="0" aria-valuemax="1" aria-valuenow="1" aria-label="Controle de volume" />
-  </div>
+  <div class="audio-container" id="audio-container">
+    <div class="controls-container">
+      <div class="shuffle-repeat-container">
+        <button id="shuffle-btn" class="toggle-btn" title="Aleatório">🔀</button>
+        <button id="repeat-btn" class="toggle-btn" title="Repetir">🔁</button>
+      </div>
 
-  <div class="player-controls" role="region" aria-label="Controles do player">
-    <button class="control-btn" id="prev-btn" aria-label="Música anterior" title="Música anterior" disabled>
-      &#9664;&#9664;
-    </button>
-    <button class="control-btn" id="play-pause-btn" aria-label="Tocar música" title="Tocar música" disabled>
-      &#9654;
-    </button>
-    <button class="control-btn" id="next-btn" aria-label="Próxima música" title="Próxima música" disabled>
-      &#9654;&#9654;
-    </button>
-  </div>
-  <div class="player-info" aria-live="polite" aria-atomic="true" id="player-info">
-    Nenhuma música selecionada
-  </div>
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar">
+          <div class="progress-filled" id="progress-filled"></div>
+        </div>
+        <div class="time-display">
+          <span id="current-time">0:00</span>
+          <span id="duration">0:00</span>
+        </div>
+      </div>
 
-  <div class="visualizer-container" role="region" aria-label="Visualizador de áudio">
-    <canvas id="visualizer" class="visualizer" width="600" height="80"></canvas>
+      <div class="volume-container">
+        <span id="volume-icon" class="volume-icon">🔊</span>
+        <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+      </div>
+
+      <div class="player-controls">
+        <button class="control-btn" id="prev-btn" disabled>⏮</button>
+        <button class="control-btn" id="play-pause-btn" disabled>▶</button>
+        <button class="control-btn" id="next-btn" disabled>⏭</button>
+      </div>
+      
+      <div class="player-info" id="player-info">Nenhuma mídia selecionada</div>
+    </div>
   </div>
 
   <audio id="audio" preload="metadata"></audio>
 </main>
 
 <script>
-  (() => {
-    'use strict';
+(() => {
+  'use strict';
 
-    const fileInput = document.getElementById('file-input');
-    const directoryInput = document.getElementById('directory-input');
-    const playlistEl = document.getElementById('playlist');
-    const audio = document.getElementById('audio');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const playerInfo = document.getElementById('player-info');
-    const statusInfo = document.getElementById('status-info');
-    const progressBar = document.getElementById('progress-bar');
-    const progressFilled = document.getElementById('progress-filled');
-    const currentTimeEl = document.getElementById('current-time');
-    const durationEl = document.getElementById('duration');
-    const volumeSlider = document.getElementById('volume-slider');
-    const volumeIcon = document.getElementById('volume-icon');
-    const shuffleBtn = document.getElementById('shuffle-btn');
-    const repeatBtn = document.getElementById('repeat-btn');
-    const searchInput = document.getElementById('search-input');
-    const visualizerCanvas = document.getElementById('visualizer');
-    const visualizerCtx = visualizerCanvas.getContext('2d');
+  // Elementos do DOM
+  const fileInput = document.getElementById('file-input');
+  const directoryInput = document.getElementById('directory-input');
+  const playlistEl = document.getElementById('playlist');
+  const audio = document.getElementById('audio');
+  const video = document.getElementById('video');
+  const videoContainer = document.getElementById('video-container');
+  const audioContainer = document.getElementById('audio-container');
+  const playPauseBtn = document.getElementById('play-pause-btn');
+  const videoPlayPauseBtn = document.getElementById('video-play-pause');
+  const prevBtn = document.getElementById('prev-btn');
+  const videoPrevBtn = document.getElementById('video-prev');
+  const nextBtn = document.getElementById('next-btn');
+  const videoNextBtn = document.getElementById('video-next');
+  const playerInfo = document.getElementById('player-info');
+  const statusInfo = document.getElementById('status-info');
+  const progressBar = document.getElementById('progress-bar');
+  const progressFilled = document.getElementById('progress-filled');
+  const currentTimeEl = document.getElementById('current-time');
+  const durationEl = document.getElementById('duration');
+  const volumeSlider = document.getElementById('volume-slider');
+  const videoVolumeSlider = document.getElementById('video-volume');
+  const volumeIcon = document.getElementById('volume-icon');
+  const shuffleBtn = document.getElementById('shuffle-btn');
+  const repeatBtn = document.getElementById('repeat-btn');
+  const searchInput = document.getElementById('search-input');
+  const fullscreenBtn = document.getElementById('fullscreen-btn');
+  const typeBtns = document.querySelectorAll('.type-btn');
+  const audioViewBtn = document.getElementById('audio-view-btn');
+  const videoViewBtn = document.getElementById('video-view-btn');
 
-    let songs = [];
-    let currentIndex = -1;
-    let isPlaying = false;
-    let isShuffle = false;
-    let isRepeat = false;
-    let shuffledOrder = [];
-    let audioContext, analyser, sourceNode, dataArray, animationId;
-    let isMuted = false;
-    let lastVolume = 1;
+  // Variáveis de estado
+  let mediaFiles = [];
+  let currentIndex = -1;
+  let isPlaying = false;
+  let isShuffle = false;
+  let isRepeat = false;
+  let shuffledOrder = [];
+  let currentType = 'all';
+  let isMuted = false;
+  let lastVolume = 1;
 
-    function createSongElement(file, index) {
-      const songEl = document.createElement('div');
-      songEl.className = 'song';
-      songEl.setAttribute('role', 'listitem');
-      songEl.tabIndex = 0;
-      songEl.dataset.index = index;
+  // Extensões de arquivo suportadas
+  const audioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'wma'];
+  const videoExtensions = ['mp4', 'webm', 'ogg', 'avi', 'mov', 'mkv', 'flv', 'wmv'];
 
-      const musicNote = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      musicNote.setAttribute('viewBox', '0 0 24 24');
-      musicNote.classList.add('music-note');
-      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  // Determina o tipo de arquivo
+  function getFileType(filename) {
+    const extension = filename.split('.').pop().toLowerCase();
+    if (audioExtensions.includes(extension)) return 'audio';
+    if (videoExtensions.includes(extension)) return 'video';
+    return 'unknown';
+  }
+
+  // Cria elemento de mídia para a playlist
+  function createMediaElement(file, index) {
+    const mediaEl = document.createElement('div');
+    mediaEl.className = 'media-item';
+    mediaEl.setAttribute('role', 'listitem');
+    mediaEl.tabIndex = 0;
+    mediaEl.dataset.index = index;
+    mediaEl.dataset.type = getFileType(file.name);
+
+    const iconSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    iconSvg.setAttribute('viewBox', '0 0 24 24');
+    iconSvg.classList.add('media-icon');
+    
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const fileType = getFileType(file.name);
+    
+    if (fileType === 'audio') {
       path.setAttribute('d', 'M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z');
-      musicNote.appendChild(path);
-
-      songEl.appendChild(musicNote);
-      const fileName = document.createElement('span');
-      fileName.textContent = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
-      songEl.appendChild(fileName);
-
-      songEl.addEventListener('click', () => {
-        loadSong(index);
-        playSong();
-      });
-      songEl.addEventListener('keypress', (e) => {
-        if(e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          loadSong(index);
-          playSong();
-        }
-      });
-
-      return songEl;
+    } else if (fileType === 'video') {
+      path.setAttribute('d', 'M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V4h-4z');
     }
+    
+    iconSvg.appendChild(path);
+    mediaEl.appendChild(iconSvg);
 
-    function renderPlaylist() {
-      playlistEl.innerHTML = '';
-      songs.forEach((file, idx) => {
-        const songEl = createSongElement(file, idx);
-        if (idx === currentIndex) songEl.classList.add('active');
-        songEl.classList.remove('hidden');
-        playlistEl.appendChild(songEl);
-      });
-      updateStatusInfo();
-    }
+    const fileName = document.createElement('span');
+    fileName.textContent = file.name.replace(/\.[^/.]+$/, "");
+    mediaEl.appendChild(fileName);
 
-    function loadSong(index) {
-      if (index < 0 || index >= songs.length) return;
-      currentIndex = index;
-      const file = songs[index];
-      const fileURL = URL.createObjectURL(file);
+    mediaEl.addEventListener('click', () => {
+      loadMedia(index);
+      playMedia();
+    });
+
+    return mediaEl;
+  }
+
+  // Renderiza a playlist
+  function renderPlaylist() {
+    playlistEl.innerHTML = '';
+    const filteredFiles = currentType === 'all' 
+      ? mediaFiles 
+      : mediaFiles.filter(file => getFileType(file.name) === currentType);
+
+    filteredFiles.forEach((file, idx) => {
+      const originalIndex = mediaFiles.indexOf(file);
+      const mediaEl = createMediaElement(file, originalIndex);
+      
+      if (originalIndex === currentIndex) {
+        mediaEl.classList.add('active');
+      }
+      
+      mediaEl.classList.remove('hidden');
+      playlistEl.appendChild(mediaEl);
+    });
+    
+    updateStatusInfo();
+  }
+
+  // Carrega a mídia para reprodução
+  function loadMedia(index) {
+    if (index < 0 || index >= mediaFiles.length) return;
+    currentIndex = index;
+    const file = mediaFiles[index];
+    const fileURL = URL.createObjectURL(file);
+    const fileType = getFileType(file.name);
+
+    if (fileType === 'audio') {
+      showAudioPlayer();
       audio.src = fileURL;
-      updateActiveSong();
-      updatePlayerInfo(`Selecionado: ${file.name.replace(/\.[^/.]+$/, "")}`);
-      playPauseBtn.disabled = false;
-      updateControls();
+      video.pause();
+    } else if (fileType === 'video') {
+      showVideoPlayer();
+      video.src = fileURL;
+      audio.pause();
     }
 
-    function updateActiveSong() {
-      const songElements = playlistEl.querySelectorAll('.song');
-      songElements.forEach((el, i) => {
-        el.classList.toggle('active', i === currentIndex);
-      });
-    }
+    updateActiveMedia();
+    updatePlayerInfo(`Selecionado: ${file.name.replace(/\.[^/.]+$/, "")}`);
+    updateControls();
+  }
 
-    function playSong() {
-      if (currentIndex === -1) return;
+  // Mostra o player de áudio
+  function showAudioPlayer() {
+    videoContainer.classList.remove('active');
+    audioContainer.classList.remove('hidden');
+  }
+
+  // Mostra o player de vídeo
+  function showVideoPlayer() {
+    videoContainer.classList.add('active');
+    audioContainer.classList.add('hidden');
+  }
+
+  // Atualiza o item ativo na playlist
+  function updateActiveMedia() {
+    const mediaElements = playlistEl.querySelectorAll('.media-item');
+    mediaElements.forEach((el) => {
+      const index = parseInt(el.dataset.index);
+      el.classList.toggle('active', index === currentIndex);
+    });
+  }
+
+  // Inicia a reprodução
+  function playMedia() {
+    if (currentIndex === -1) return;
+    
+    const fileType = getFileType(mediaFiles[currentIndex].name);
+    
+    if (fileType === 'audio') {
       audio.play()
         .then(() => {
           isPlaying = true;
-          playPauseBtn.innerHTML = '&#10073;&#10073;'; // Pause icon
-          playPauseBtn.setAttribute('aria-label', 'Pausar música');
-          playPauseBtn.title = 'Pausar música';
-          updatePlayerInfo(`Tocando: ${songs[currentIndex].name.replace(/\.[^/.]+$/, "")}`);
-          updateControls();
+          playPauseBtn.innerHTML = '⏸';
+          videoPlayPauseBtn.innerHTML = '⏸';
+          updatePlayerInfo(`Tocando: ${mediaFiles[currentIndex].name.replace(/\.[^/.]+$/, "")}`);
         })
         .catch(error => {
           console.error("Erro ao reproduzir:", error);
-          updatePlayerInfo(`Erro ao reproduzir: ${songs[currentIndex].name.replace(/\.[^/.]+$/, "")}`);
+        });
+    } else if (fileType === 'video') {
+      video.play()
+        .then(() => {
+          isPlaying = true;
+          playPauseBtn.innerHTML = '⏸';
+          videoPlayPauseBtn.innerHTML = '⏸';
+          updatePlayerInfo(`Reproduzindo: ${mediaFiles[currentIndex].name.replace(/\.[^/.]+$/, "")}`);
+        })
+        .catch(error => {
+          console.error("Erro ao reproduzir:", error);
         });
     }
+    
+    updateControls();
+  }
 
-    function pauseSong() {
-      audio.pause();
-      isPlaying = false;
-      playPauseBtn.innerHTML = '&#9654;'; // Play icon
-      playPauseBtn.setAttribute('aria-label', 'Tocar música');
-      playPauseBtn.title = 'Tocar música';
-      updatePlayerInfo(`Pausado: ${songs[currentIndex].name.replace(/\.[^/.]+$/, "")}`);
-      updateControls();
+  // Pausa a reprodução
+  function pauseMedia() {
+    isPlaying = false;
+    audio.pause();
+    video.pause();
+    playPauseBtn.innerHTML = '▶';
+    videoPlayPauseBtn.innerHTML = '▶';
+    updatePlayerInfo(`Pausado: ${mediaFiles[currentIndex].name.replace(/\.[^/.]+$/, "")}`);
+    updateControls();
+  }
+
+  // Atualiza os controles
+  function updateControls() {
+    prevBtn.disabled = currentIndex <= 0 && !isShuffle;
+    nextBtn.disabled = currentIndex >= mediaFiles.length - 1 && !isShuffle;
+    shuffleBtn.classList.toggle('active', isShuffle);
+    repeatBtn.classList.toggle('active', isRepeat);
+  }
+
+  // Atualiza as informações de status
+  function updateStatusInfo() {
+    const audioCount = mediaFiles.filter(f => getFileType(f.name) === 'audio').length;
+    const videoCount = mediaFiles.filter(f => getFileType(f.name) === 'video').length;
+    
+    if (currentType === 'all') {
+      statusInfo.textContent = `${mediaFiles.length} mídias (${audioCount} áudios, ${videoCount} vídeos)`;
+    } else if (currentType === 'audio') {
+      statusInfo.textContent = `${audioCount} músicas`;
+    } else {
+      statusInfo.textContent = `${videoCount} vídeos`;
     }
+  }
 
-    function updateControls() {
-      prevBtn.disabled = currentIndex <= 0 && !isShuffle;
-      nextBtn.disabled = currentIndex >= songs.length - 1 && !isShuffle;
-      shuffleBtn.setAttribute('aria-pressed', isShuffle);
-      repeatBtn.setAttribute('aria-pressed', isRepeat);
-      shuffleBtn.classList.toggle('active', isShuffle);
-      repeatBtn.classList.toggle('active', isRepeat);
+  // Alterna entre play/pause
+  function playPauseToggle() {
+    if (isPlaying) {
+      pauseMedia();
+    } else {
+      playMedia();
     }
+  }
 
-    function updateStatusInfo() {
-      statusInfo.textContent = `${songs.length} ${songs.length === 1 ? 'música' : 'músicas'} carregada${songs.length === 1 ? '' : 's'}`;
-    }
-
-    function playPauseToggle() {
-      if (isPlaying) {
-        pauseSong();
-      } else {
-        playSong();
-      }
-    }
-
-    function playNext() {
-      if (isShuffle) {
-        if (shuffledOrder.length === 0) {
-          shuffledOrder = [...Array(songs.length).keys()];
-          shuffleArray(shuffledOrder);
-        }
-        const nextIndex = shuffledOrder.shift();
-        loadSong(nextIndex);
-        playSong();
-      } else if (currentIndex < songs.length - 1) {
-        loadSong(currentIndex + 1);
-        playSong();
-      } else if (isRepeat) {
-        loadSong(currentIndex);
-        playSong();
-      } else if (songs.length > 0) {
-        // Loop to start if at end
-        loadSong(0);
-        playSong();
-      }
-    }
-
-    function playPrev() {
-      if (currentIndex > 0) {
-        loadSong(currentIndex - 1);
-        playSong();
-      }
-    }
-
-    function updatePlayerInfo(text) {
-      playerInfo.textContent = text;
-    }
-
-    function handleFiles(files) {
-      const audioFiles = Array.from(files); // Accept all files
-      if (audioFiles.length === 0) {
-        alert("Nenhum arquivo encontrado.");
-        return;
-      }
-      
-      // Add new files to the playlist
-      songs = songs.concat(audioFiles);
-      renderPlaylist();
-      
-      // If no song is loaded, load the first one
-      if (currentIndex === -1 && songs.length > 0) {
-        loadSong(0);
-      } else {
-        updateControls();
-      }
-    }
-
-    // Progress bar update
-    audio.addEventListener('timeupdate', () => {
-      if (audio.duration) {
-        const percent = (audio.currentTime / audio.duration) * 100;
-        progressFilled.style.width = percent + '%';
-        currentTimeEl.textContent = formatTime(audio.currentTime);
-        durationEl.textContent = formatTime(audio.duration);
-        progressBar.setAttribute('aria-valuenow', percent.toFixed(0));
-      }
-    });
-
-    // Seek functionality
-    progressBar.addEventListener('click', (e) => {
-      const rect = progressBar.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const width = rect.width;
-      const percent = clickX / width;
-      if (audio.duration) {
-        audio.currentTime = percent * audio.duration;
-      }
-    });
-
-    // Keyboard accessibility for progress bar
-    progressBar.addEventListener('keydown', (e) => {
-      if (!audio.duration) return;
-      let seekTime = audio.currentTime;
-      switch(e.key) {
-        case 'ArrowLeft':
-          seekTime = Math.max(0, seekTime - 5);
-          break;
-        case 'ArrowRight':
-          seekTime = Math.min(audio.duration, seekTime + 5);
-          break;
-        case 'Home':
-          seekTime = 0;
-          break;
-        case 'End':
-          seekTime = audio.duration;
-          break;
-        default:
-          return;
-      }
-      e.preventDefault();
-      audio.currentTime = seekTime;
-    });
-
-    // Format time in mm:ss
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
-      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    }
-
-    // Volume control
-    volumeSlider.addEventListener('input', () => {
-      audio.volume = volumeSlider.value;
-      if (audio.volume === 0) {
-        isMuted = true;
-        volumeIcon.textContent = '🔇';
-      } else {
-        isMuted = false;
-        volumeIcon.textContent = '🔊';
-        lastVolume = audio.volume;
-      }
-    });
-
-    volumeIcon.addEventListener('click', () => {
-      if (isMuted) {
-        audio.volume = lastVolume;
-        volumeSlider.value = lastVolume;
-        volumeIcon.textContent = '🔊';
-        isMuted = false;
-      } else {
-        lastVolume = audio.volume;
-        audio.volume = 0;
-        volumeSlider.value = 0;
-        volumeIcon.textContent = '🔇';
-        isMuted = true;
-      }
-    });
-
-    // Shuffle and repeat toggle
-    shuffleBtn.addEventListener('click', () => {
-      isShuffle = !isShuffle;
-      if (isShuffle) {
-        shuffledOrder = [...Array(songs.length).keys()];
+  // Reproduz o próximo item
+  function playNext() {
+    if (isShuffle) {
+      if (shuffledOrder.length === 0) {
+        shuffledOrder = [...Array(mediaFiles.length).keys()];
         shuffleArray(shuffledOrder);
       }
+      const nextIndex = shuffledOrder.shift();
+      loadMedia(nextIndex);
+      playMedia();
+    } else if (currentIndex < mediaFiles.length - 1) {
+      loadMedia(currentIndex + 1);
+      playMedia();
+    } else if (isRepeat) {
+      loadMedia(currentIndex);
+      playMedia();
+    } else if (mediaFiles.length > 0) {
+      loadMedia(0);
+      playMedia();
+    }
+  }
+
+  // Reproduz o item anterior
+  function playPrev() {
+    if (currentIndex > 0) {
+      loadMedia(currentIndex - 1);
+      playMedia();
+    }
+  }
+
+  // Atualiza as informações do player
+  function updatePlayerInfo(text) {
+    playerInfo.textContent = text;
+  }
+
+  // Processa os arquivos selecionados
+  function handleFiles(files) {
+    const newFiles = Array.from(files);
+    if (newFiles.length === 0) {
+      alert("Nenhum arquivo encontrado.");
+      return;
+    }
+    
+    const validFiles = newFiles.filter(file => {
+      const type = getFileType(file.name);
+      return type === 'audio' || type === 'video';
+    });
+    
+    if (validFiles.length === 0) {
+      alert("Nenhum arquivo de mídia válido encontrado.");
+      return;
+    }
+    
+    mediaFiles = mediaFiles.concat(validFiles);
+    renderPlaylist();
+    
+    if (currentIndex === -1 && mediaFiles.length > 0) {
+      loadMedia(0);
+    } else {
       updateControls();
-    });
-
-    repeatBtn.addEventListener('click', () => {
-      isRepeat = !isRepeat;
-      updateControls();
-    });
-
-    // Shuffle helper
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
     }
+  }
 
-    // Playlist search/filter
-    searchInput.addEventListener('input', () => {
-      const query = searchInput.value.toLowerCase();
-      const songElements = playlistEl.querySelectorAll('.song');
-      songElements.forEach(el => {
-        const text = el.textContent.toLowerCase();
-        if (text.includes(query)) {
-          el.classList.remove('hidden');
-        } else {
-          el.classList.add('hidden');
-        }
-      });
-    });
+  // Formata o tempo (mm:ss)
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
 
-    // Playlist save/load using localStorage
-    function savePlaylist() {
-      try {
-        const playlistData = songs.map(file => ({
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          lastModified: file.lastModified
-        }));
-        localStorage.setItem('playlist', JSON.stringify(playlistData));
-        alert('Playlist salva com sucesso!');
-      } catch (e) {
-        alert('Erro ao salvar playlist.');
-      }
+  // Embaralha um array
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
+  }
 
-    function loadPlaylist() {
-      try {
-        const playlistData = JSON.parse(localStorage.getItem('playlist'));
-        if (!playlistData) {
-          alert('Nenhuma playlist salva encontrada.');
-          return;
-        }
-        alert('Para carregar a playlist, selecione os arquivos correspondentes manualmente.');
-      } catch (e) {
-        alert('Erro ao carregar playlist.');
-      }
+  // Event listeners
+  fileInput.addEventListener('change', () => {
+    handleFiles(fileInput.files);
+    fileInput.value = '';
+  });
+
+  directoryInput.addEventListener('change', () => {
+    handleFiles(directoryInput.files);
+    directoryInput.value = '';
+  });
+
+  playPauseBtn.addEventListener('click', playPauseToggle);
+  videoPlayPauseBtn.addEventListener('click', playPauseToggle);
+  prevBtn.addEventListener('click', playPrev);
+  videoPrevBtn.addEventListener('click', playPrev);
+  nextBtn.addEventListener('click', playNext);
+  videoNextBtn.addEventListener('click', playNext);
+
+  shuffleBtn.addEventListener('click', () => {
+    isShuffle = !isShuffle;
+    if (isShuffle) {
+      shuffledOrder = [...Array(mediaFiles.length).keys()];
+      shuffleArray(shuffledOrder);
     }
+    updateControls();
+  });
 
-    // Audio visualization setup
-    function setupVisualizer() {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        sourceNode = audioContext.createMediaElementSource(audio);
-        sourceNode.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
-      }
+  repeatBtn.addEventListener('click', () => {
+    isRepeat = !isRepeat;
+    updateControls();
+  });
+
+  // Atualiza a barra de progresso
+  function updateProgress() {
+    const currentMedia = getFileType(mediaFiles[currentIndex]?.name) === 'video' ? video : audio;
+    if (currentMedia && currentMedia.duration) {
+      const percent = (currentMedia.currentTime / currentMedia.duration) * 100;
+      progressFilled.style.width = percent + '%';
+      currentTimeEl.textContent = formatTime(currentMedia.currentTime);
+      durationEl.textContent = formatTime(currentMedia.duration);
     }
+  }
 
-    function drawVisualizer() {
-      if (!analyser) return;
-      const width = visualizerCanvas.width;
-      const height = visualizerCanvas.height;
-      analyser.getByteFrequencyData(dataArray);
+  audio.addEventListener('timeupdate', updateProgress);
+  video.addEventListener('timeupdate', updateProgress);
 
-      visualizerCtx.clearRect(0, 0, width, height);
-      const barWidth = (width / dataArray.length) * 2.5;
-      let x = 0;
-
-      for (let i = 0; i < dataArray.length; i++) {
-        const barHeight = dataArray[i] / 2;
-        visualizerCtx.fillStyle = 'var(--color-accent)';
-        visualizerCtx.fillRect(x, height - barHeight, barWidth, barHeight);
-        x += barWidth + 1;
-      }
-      animationId = requestAnimationFrame(drawVisualizer);
+  progressBar.addEventListener('click', (e) => {
+    const currentMedia = getFileType(mediaFiles[currentIndex]?.name) === 'video' ? video : audio;
+    if (currentMedia && currentMedia.duration) {
+      const rect = progressBar.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      currentMedia.currentTime = percent * currentMedia.duration;
     }
+  });
 
-    audio.addEventListener('play', () => {
-      setupVisualizer();
-      if (audioContext.state === 'suspended') {
-        audioContext.resume();
-      }
-      drawVisualizer();
+  // Controle de volume
+  function updateVolume() {
+    const volume = volumeSlider.value;
+    audio.volume = volume;
+    video.volume = volume;
+    
+    if (volume === 0) {
+      volumeIcon.textContent = '🔇';
+      isMuted = true;
+    } else {
+      volumeIcon.textContent = '🔊';
+      isMuted = false;
+      lastVolume = volume;
+    }
+  }
+
+  volumeSlider.addEventListener('input', updateVolume);
+  videoVolumeSlider.addEventListener('input', updateVolume);
+
+  volumeIcon.addEventListener('click', () => {
+    if (isMuted) {
+      volumeSlider.value = lastVolume;
+      videoVolumeSlider.value = lastVolume;
+      updateVolume();
+    } else {
+      lastVolume = volumeSlider.value;
+      volumeSlider.value = 0;
+      videoVolumeSlider.value = 0;
+      updateVolume();
+    }
+  });
+
+  // Busca
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const mediaElements = playlistEl.querySelectorAll('.media-item');
+    mediaElements.forEach(el => {
+      const text = el.textContent.toLowerCase();
+      el.classList.toggle('hidden', !text.includes(query));
     });
+  });
 
-    audio.addEventListener('pause', () => {
-      cancelAnimationFrame(animationId);
-      visualizerCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+  // Filtro por tipo de mídia
+  typeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      typeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentType = btn.dataset.type;
+      renderPlaylist();
     });
+  });
 
-    audio.addEventListener('ended', () => {
-      playNext();
-    });
+  // Reprodução automática do próximo item
+  audio.addEventListener('ended', () => {
+    if (!isRepeat) playNext();
+  });
 
-    fileInput.addEventListener('change', () => {
-      handleFiles(fileInput.files);
-      fileInput.value = ''; // Reset input to allow selecting same files again
-    });
+  video.addEventListener('ended', () => {
+    if (!isRepeat) playNext();
+  });
 
-    directoryInput.addEventListener('change', () => {
-      handleFiles(directoryInput.files);
-      directoryInput.value = ''; // Reset input to allow selecting same directory again
-    });
+  // Tela cheia
+  fullscreenBtn.addEventListener('click', () => {
+    if (video.requestFullscreen) {
+      video.requestFullscreen();
+    } else if (video.webkitRequestFullscreen) {
+      video.webkitRequestFullscreen();
+    } else if (video.msRequestFullscreen) {
+      video.msRequestFullscreen();
+    }
+  });
 
-    playPauseBtn.addEventListener('click', playPauseToggle);
-    prevBtn.addEventListener('click', playPrev);
-    nextBtn.addEventListener('click', playNext);
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return; // Ignore when typing in inputs
-      
-      switch(e.key) {
-        case ' ':
-          if (currentIndex !== -1) {
-            e.preventDefault();
-            playPauseToggle();
-          }
-          break;
-        case 'ArrowRight':
-          if (currentIndex !== -1) {
-            e.preventDefault();
-            playNext();
-          }
-          break;
-        case 'ArrowLeft':
-          if (currentIndex !== -1) {
-            e.preventDefault();
-            playPrev();
-          }
-          break;
-      }
-    });
-
-    // Accessibility: label click keyboard support
-    document.querySelectorAll('.file-input-label, .directory-input-label').forEach(label => {
-      label.addEventListener('keydown', (e) => {
-        if(e.key === "Enter" || e.key === " ") {
+  // Atalhos de teclado
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    
+    switch(e.key) {
+      case ' ':
+        if (currentIndex !== -1) {
           e.preventDefault();
-          const inputId = label.getAttribute('for');
-          document.getElementById(inputId).click();
+          playPauseToggle();
         }
+        break;
+      case 'ArrowRight':
+        if (currentIndex !== -1) {
+          e.preventDefault();
+          playNext();
+        }
+        break;
+      case 'ArrowLeft':
+        if (currentIndex !== -1) {
+          e.preventDefault();
+          playPrev();
+        }
+        break;
+    }
+  });
+
+  // Botões de visualização (áudio/vídeo)
+  audioViewBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    currentType = 'audio';
+    typeBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === 'audio');
+    });
+    renderPlaylist();
+    if (currentIndex !== -1 && getFileType(mediaFiles[currentIndex].name) === 'audio') {
+      showAudioPlayer();
+    }
+  });
+
+  videoViewBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    currentType = 'video';
+    typeBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.type === 'video');
+    });
+    renderPlaylist();
+    if (currentIndex !== -1 && getFileType(mediaFiles[currentIndex].name) === 'video') {
+      showVideoPlayer();
+    }
+  });
+
+  // Service Worker para funcionar offline
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').then(registration => {
+        console.log('ServiceWorker registrado com sucesso: ', registration.scope);
+      }).catch(error => {
+        console.log('Falha ao registrar ServiceWorker: ', error);
       });
     });
-
-  })();
+  }
+})();
 </script>
-
 </body>
 </html>
