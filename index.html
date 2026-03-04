@@ -1,63 +1,52 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="pt-BR" class="dark">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <meta name="description" content="NexusApp — Modern SaaS Dashboard with analytics, search, and team management." />
-  <meta property="og:title" content="NexusApp — Modern SaaS Dashboard" />
-  <meta property="og:description"
-    content="Professional SaaS dashboard with real-time metrics, analytics and collaboration tools." />
-  <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#6366f1" />
-  <title>NexusApp — Modern SaaS Dashboard</title>
+  <meta name="description" content="Reprodutor de músicas offline — toque seus arquivos locais direto no navegador." />
+  <meta name="theme-color" content="#7c3aed" />
+  <title>🎵 MusicFlow — Reprodutor Offline</title>
   <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            brand: { 50: '#eef2ff', 100: '#e0e7ff', 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' }
-          },
+          colors: { primary: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' } },
           animation: {
-            'fade-in': 'fadeIn .3s ease', 'slide-up': 'slideUp .35s ease', 'pulse-slow': 'pulse 3s infinite', 'spin-slow': 'spin 3s linear infinite'
+            'spin-slow': 'spin 8s linear infinite',
+            'fade-in': 'fadeIn .3s ease',
+            'slide-up': 'slideUp .35s ease',
+            'eq1': 'eq1 .8s ease-in-out infinite alternate',
+            'eq2': 'eq1 1s ease-in-out infinite alternate',
+            'eq3': 'eq1 .6s ease-in-out infinite alternate',
           },
           keyframes: {
             fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
-            slideUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } }
+            slideUp: { '0%': { transform: 'translateY(16px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
+            eq1: { '0%': { transform: 'scaleY(.3)' }, '100%': { transform: 'scaleY(1)' } },
           }
         }
       }
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * {
       font-family: 'Inter', sans-serif;
       box-sizing: border-box
     }
 
-    :root {
-      --accent: #6366f1
-    }
-
     html {
       scroll-behavior: smooth
     }
 
-    body {
-      transition: background .3s
-    }
-
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px
+      width: 5px
     }
 
     ::-webkit-scrollbar-track {
@@ -65,1130 +54,1072 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #4f46e5;
+      background: #7c3aed;
       border-radius: 9px
     }
 
-    .skeleton {
-      background: linear-gradient(90deg, #1e1b4b 25%, #312e81 50%, #1e1b4b 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite
-    }
-
-    @keyframes shimmer {
-      0% {
-        background-position: 200% 0
-      }
-
-      100% {
-        background-position: -200% 0
-      }
-    }
-
-    .drag-over {
-      border-color: #6366f1 !important;
-      background: rgba(99, 102, 241, .1) !important
-    }
-
-  
     *:focus-visible {
-      outline: 2px solid #6366f1;
+      outline: 2px solid #8b5cf6;
       outline-offset: 2px
     }
 
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity .5s, transform .5s
+    /* Glass effect */
+    .glass {
+      background: rgba(255, 255, 255, .04);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, .08)
     }
 
-    .reveal.visible {
-      opacity: 1;
-      transform: none
+    .glass-dark {
+      background: rgba(0, 0, 0, .3);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, .06)
     }
 
-
-    .step-bar {
-      transition: width .4s ease
-    }
-
-   
-    #toast-container {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: .5rem
-    }
-
-    .toast {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-      padding: .75rem 1.25rem;
-      border-radius: 12px;
-      min-width: 260px;
-      max-width: 360px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .35);
-      animation: slideUp .3s ease;
-      font-size: .875rem;
-      font-weight: 500;
-      backdrop-filter: blur(12px)
-    }
-
-    
+    /* Gradient text */
     .grad {
-      background: linear-gradient(135deg, #818cf8, #c084fc);
+      background: linear-gradient(135deg, #a78bfa, #ec4899);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       color: transparent
     }
 
-    .glass {
-      background: rgba(255, 255, 255, .03);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, .08)
+    /* Album art spinning */
+    .spinning {
+      animation: spin 12s linear infinite
     }
 
-    .ring {
-      stroke-dasharray: 220;
-      stroke-dashoffset: 55;
-      transition: stroke-dashoffset .6s ease
+    .paused {
+      animation-play-state: paused
     }
 
-    .badge {
-      animation: pulse 2s infinite
+    /* Progress bar */
+    .progress-bar {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, .15);
+      outline: none;
+      cursor: pointer;
+      transition: height .2s
+    }
+
+    .progress-bar:hover {
+      height: 7px
+    }
+
+    .progress-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: #8b5cf6;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid #fff;
+      box-shadow: 0 0 8px #8b5cf6
+    }
+
+    .progress-bar::-webkit-slider-runnable-track {
+      border-radius: 9px
+    }
+
+    /* Volume */
+    .vol-bar {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 9px;
+      background: rgba(255, 255, 255, .15);
+      cursor: pointer
+    }
+
+    .vol-bar::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: #8b5cf6;
+      border-radius: 50%;
+      cursor: pointer
+    }
+
+    /* Equalizer bars */
+    .eq-bar {
+      display: inline-block;
+      width: 3px;
+      background: linear-gradient(180deg, #ec4899, #8b5cf6);
+      border-radius: 2px;
+      transform-origin: bottom;
+      margin: 0 1px
+    }
+
+    .playing .eq-bar:nth-child(1) {
+      animation: eq1 .8s ease-in-out infinite alternate
+    }
+
+    .playing .eq-bar:nth-child(2) {
+      animation: eq1 .5s ease-in-out infinite alternate
+    }
+
+    .playing .eq-bar:nth-child(3) {
+      animation: eq1 1s ease-in-out infinite alternate
+    }
+
+    .playing .eq-bar:nth-child(4) {
+      animation: eq1 .7s ease-in-out infinite alternate
+    }
+
+    .playing .eq-bar:nth-child(5) {
+      animation: eq1 .9s ease-in-out infinite alternate
+    }
+
+    /* Track row hover */
+    .track-row {
+      transition: background .2s;
+      cursor: pointer
+    }
+
+    .track-row:hover {
+      background: rgba(139, 92, 246, .12)
+    }
+
+    .track-row.active {
+      background: rgba(139, 92, 246, .2);
+      border-left: 3px solid #8b5cf6
+    }
+
+    /* Canvas visualizer */
+    #visualizer {
+      border-radius: 16px;
+      opacity: .85
+    }
+
+    /* Drop zone states */
+    .drag-over {
+      border-color: #8b5cf6 !important;
+      background: rgba(139, 92, 246, .1) !important
+    }
+
+    /* Neon glow */
+    .neon-glow {
+      box-shadow: 0 0 30px rgba(139, 92, 246, .4), 0 0 60px rgba(139, 92, 246, .15)
+    }
+
+    /* Ripple btn */
+    .btn-icon {
+      position: relative;
+      overflow: hidden;
+      transition: transform .15s, opacity .15s
+    }
+
+    .btn-icon:hover {
+      transform: scale(1.1)
+    }
+
+    .btn-icon:active {
+      transform: scale(.95)
+    }
+
+    /* Animated bg */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, .15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, .1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0
     }
   </style>
 </head>
 
-<body class="bg-gray-950 text-gray-100 min-h-screen">
+<body class="bg-gray-950 text-gray-100 min-h-screen relative overflow-x-hidden">
 
-  <div id="toast-container" aria-live="polite"></div>
+  <!-- ===== TOAST ===== -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <div id="conn-banner"
-    class="hidden fixed top-0 left-0 right-0 z-50 bg-red-600 text-white text-center text-sm py-1.5 font-medium">
-    ⚠️ You are offline — changes will sync when reconnected.
-  </div>
-
-
-  <nav class="sticky top-0 z-40 border-b border-white/5 glass px-4 md:px-8 h-16 flex items-center justify-between">
+  <!-- ===== HEADER ===== -->
+  <header class="relative z-10 px-4 md:px-8 py-4 flex items-center justify-between glass border-b border-white/5">
     <div class="flex items-center gap-3">
-      <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg hover:bg-white/10 transition"
-        aria-label="Toggle sidebar">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      <a href="#" class="flex items-center gap-2 font-bold text-lg" aria-label="NexusApp home">
-        <span class="text-2xl">⚡</span><span class="grad">NexusApp</span>
-      </a>
+      <div class="text-2xl">🎵</div>
+      <h1 class="font-bold text-lg"><span class="grad">MusicFlow</span></h1>
+      <span class="text-xs text-gray-500 hidden md:block">reprodutor offline</span>
     </div>
-
-    <div class="hidden md:flex items-center gap-2 flex-1 max-w-sm mx-8">
-      <div class="relative w-full">
-        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
-        </svg>
-        <input id="nav-search" type="text" placeholder="Search… (K)" aria-label="Global search"
-          class="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm placeholder-gray-500 focus:bg-white/10 transition focus:border-brand-500 outline-none" />
+    <div class="flex items-center gap-3">
+      <!-- Equalizer indicator -->
+      <div id="eq-indicator" class="flex items-end h-5 gap-px opacity-0 transition-opacity">
+        <span class="eq-bar h-3"></span>
+        <span class="eq-bar h-5"></span>
+        <span class="eq-bar h-2"></span>
+        <span class="eq-bar h-4"></span>
+        <span class="eq-bar h-3"></span>
       </div>
-    </div>
-
-    <div class="flex items-center gap-2">
-      
-      <button id="theme-toggle" aria-label="Toggle dark mode"
-        class="p-2 rounded-lg hover:bg-white/10 transition text-xl">🌙</button>
-      
-      <button id="notif-btn" aria-label="Notifications" class="relative p-2 rounded-lg hover:bg-white/10 transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      <span id="track-count" class="text-xs text-gray-500">0 músicas</span>
+      <!-- Theme toggle -->
+      <button onclick="toggleTheme()" id="theme-btn" aria-label="Alternar tema"
+        class="btn-icon p-2 rounded-lg hover:bg-white/10 transition text-lg">🌙</button>
+      <!-- Add files -->
+      <button onclick="document.getElementById('file-input').click()"
+        class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-sm font-semibold px-4 py-2 rounded-xl transition btn-icon">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
         </svg>
-        <span id="notif-badge" class="badge absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        Adicionar
       </button>
-     
-      <div id="auth-buttons" class="flex gap-2">
-        <button onclick="openModal('login')"
-          class="px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-white/10 transition">Sign In</button>
-        <button onclick="openModal('register')"
-          class="px-3 py-1.5 text-sm font-semibold rounded-lg bg-brand-500 hover:bg-brand-600 transition">Get
-          Started</button>
-      </div>
-     
-      <div id="user-menu-wrap" class="hidden relative">
-        <button id="user-menu-btn" class="flex items-center gap-2 p-1 rounded-xl hover:bg-white/10 transition"
-          aria-expanded="false">
-          <img id="user-avatar" src="" alt="User avatar"
-            class="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500" />
-          <span id="user-name" class="hidden md:block text-sm font-medium"></span>
-          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      <input id="file-input" type="file" accept="audio/*" multiple class="hidden" />
+    </div>
+  </header>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div class="relative z-10 flex flex-col lg:flex-row h-[calc(100vh-65px)]">
+
+    <!-- ===== PLAYLIST (LEFT) ===== -->
+    <aside class="w-full lg:w-80 xl:w-96 flex flex-col glass border-r border-white/5 overflow-hidden"
+      style="min-height:0">
+      <!-- Search & controls -->
+      <div class="p-4 border-b border-white/5 space-y-3 flex-shrink-0">
+        <div class="relative">
+          <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
           </svg>
-        </button>
-        <div id="user-dropdown"
-          class="hidden absolute right-0 mt-2 w-48 glass rounded-xl shadow-2xl py-1 border border-white/10">
-          <div class="px-3 py-2 border-b border-white/10">
-            <p id="dd-name" class="text-sm font-semibold"></p>
-            <p id="dd-email" class="text-xs text-gray-400"></p>
+          <input id="search-input" type="text" placeholder="Buscar música…" aria-label="Buscar"
+            class="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm outline-none focus:border-primary-500 transition placeholder-gray-500" />
+        </div>
+        <div class="flex items-center justify-between text-xs text-gray-400">
+          <span id="playlist-info">Playlist vazia</span>
+          <div class="flex gap-2">
+            <button onclick="sortPlaylist('name')" title="Ordenar por nome"
+              class="hover:text-white transition px-2 py-1 rounded-lg hover:bg-white/10">A-Z</button>
+            <button onclick="clearPlaylist()" title="Limpar playlist"
+              class="hover:text-red-400 transition px-2 py-1 rounded-lg hover:bg-red-500/10">Limpar</button>
           </div>
-          <button onclick="openModal('profile')"
-            class="w-full text-left px-3 py-2 text-sm hover:bg-white/10 transition">👤 Profile</button>
-          <button onclick="openSection('settings')"
-            class="w-full text-left px-3 py-2 text-sm hover:bg-white/10 transition">⚙️ Settings</button>
-          <button onclick="exportData()" class="w-full text-left px-3 py-2 text-sm hover:bg-white/10 transition">📦
-            Export Data</button>
-          <hr class="border-white/10 my-1" />
-          <button onclick="logout()"
-            class="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 transition">🚪 Sign Out</button>
         </div>
       </div>
-    </div>
-  </nav>
 
-  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in shadow-2xl border border-white/10">
-      <button onclick="closeModal()"
-        class="absolute top-4 right-4 p-2 rounded-lg hover:bg-white/10 transition text-gray-400"
-        aria-label="Close">✕</button>
+      <!-- Track list -->
+      <div id="track-list" class="flex-1 overflow-y-auto p-2">
+        <!-- Drop zone (shown when empty) -->
+        <div id="drop-zone"
+          class="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-white/15 rounded-2xl m-2 transition hover:border-primary-500 hover:bg-primary-500/5 cursor-pointer">
+          <div class="text-6xl mb-4">🎶</div>
+          <p class="font-semibold text-gray-300 mb-2">Arraste músicas aqui</p>
+          <p class="text-sm text-gray-500 mb-4">ou clique em <strong class="text-primary-400">Adicionar</strong></p>
+          <p class="text-xs text-gray-600">MP3, WAV, FLAC, OGG, AAC, M4A</p>
+        </div>
+      </div>
+    </aside>
 
-      <div id="form-login">
-        <h2 class="text-2xl font-bold mb-1">Welcome back 👋</h2>
-        <p class="text-gray-400 text-sm mb-6">Sign in to your NexusApp account</p>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="l-email">Email</label>
-            <input id="l-email" type="email" placeholder="you@company.com"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 outline-none transition"
-              required />
-            <p id="l-email-err" class="text-red-400 text-xs mt-1 hidden">Enter a valid email.</p>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="l-pass">Password</label>
-            <div class="relative">
-              <input id="l-pass" type="password" placeholder="••••••••"
-                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm focus:border-brand-500 outline-none transition"
-                required />
-              <button type="button" onclick="togglePass('l-pass')"
-                class="absolute right-3 top-2.5 text-gray-400 hover:text-white transition text-sm">👁</button>
+    <!-- ===== PLAYER (RIGHT) ===== -->
+    <main class="flex-1 flex flex-col items-center justify-center p-6 md:p-10 overflow-y-auto" style="min-height:0">
+
+      <!-- Empty state -->
+      <div id="empty-player" class="text-center">
+        <div class="text-8xl mb-6 animate-bounce">🎵</div>
+        <h2 class="text-2xl font-bold mb-2">Nenhuma música carregada</h2>
+        <p class="text-gray-400 mb-6">Adicione arquivos de áudio para começar</p>
+        <button onclick="document.getElementById('file-input').click()"
+          class="bg-primary-600 hover:bg-primary-700 px-6 py-3 rounded-2xl font-semibold transition btn-icon">
+          🎵 Carregar músicas
+        </button>
+      </div>
+
+      <!-- Now Playing -->
+      <div id="now-playing" class="hidden w-full max-w-lg space-y-8 animate-fade-in">
+
+        <!-- Album Art -->
+        <div class="flex justify-center">
+          <div class="relative">
+            <div class="w-52 h-52 md:w-64 md:h-64 rounded-full neon-glow" id="art-ring">
+              <canvas id="art-canvas" width="256" height="256" class="w-full h-full rounded-full spinning paused"
+                style="border:4px solid rgba(139,92,246,.5)"></canvas>
             </div>
-            <p id="l-pass-err" class="text-red-400 text-xs mt-1 hidden">Min 6 characters.</p>
-          </div>
-          <label class="flex items-center gap-2 cursor-pointer select-none">
-            <input id="l-remember" type="checkbox" class="rounded accent-brand-500" /> <span class="text-sm">Remember
-              me</span>
-          </label>
-          <button id="l-btn" onclick="handleLogin()"
-            class="w-full bg-brand-500 hover:bg-brand-600 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-            Sign In
-          </button>
-        </div>
-        <p class="text-center text-sm text-gray-400 mt-5">No account? <button onclick="switchForm('register')"
-            class="text-brand-400 hover:text-brand-300 font-medium transition">Create one</button></p>
-      </div>
-
-      <div id="form-register" class="hidden">
-        <h2 class="text-2xl font-bold mb-1">Create account 🚀</h2>
-        <p class="text-gray-400 text-sm mb-6">Start your 14-day free trial</p>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="r-name">Full Name</label>
-            <input id="r-name" type="text" placeholder="John Doe"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 outline-none transition" />
-            <p id="r-name-err" class="text-red-400 text-xs mt-1 hidden">Name required.</p>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="r-email">Email</label>
-            <input id="r-email" type="email" placeholder="you@company.com"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 outline-none transition" />
-            <p id="r-email-err" class="text-red-400 text-xs mt-1 hidden">Enter a valid email.</p>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 mb-1.5" for="r-pass">Password</label>
-            <input id="r-pass" type="password" placeholder="Min 6 chars"
-              class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 outline-none transition" />
-            <div id="r-strength" class="h-1 rounded-full mt-1.5 transition-all w-0 bg-red-500"></div>
-            <p id="r-pass-err" class="text-red-400 text-xs mt-1 hidden">Min 6 characters.</p>
-          </div>
-          <button id="r-btn" onclick="handleRegister()"
-            class="w-full bg-brand-500 hover:bg-brand-600 font-semibold py-2.5 rounded-xl transition">
-            Create Account
-          </button>
-        </div>
-        <p class="text-center text-sm text-gray-400 mt-5">Have account? <button onclick="switchForm('login')"
-            class="text-brand-400 hover:text-brand-300 font-medium transition">Sign in</button></p>
-      </div>
-
-      <div id="form-profile" class="hidden text-center">
-        <img id="modal-avatar" class="w-20 h-20 rounded-full mx-auto mb-4 ring-4 ring-brand-500 object-cover" src=""
-          alt="" />
-        <h2 id="modal-uname" class="text-xl font-bold"></h2>
-        <p id="modal-uemail" class="text-gray-400 text-sm mb-4"></p>
-        <div class="flex gap-3 justify-center">
-          <div class="glass rounded-xl px-4 py-3 text-center">
-            <div class="text-xl font-bold text-brand-400" id="p-uploads">0</div>
-            <div class="text-xs text-gray-400">Uploads</div>
-          </div>
-          <div class="glass rounded-xl px-4 py-3 text-center">
-            <div class="text-xl font-bold text-green-400">Pro</div>
-            <div class="text-xs text-gray-400">Plan</div>
-          </div>
-          <div class="glass rounded-xl px-4 py-3 text-center">
-            <div class="text-xl font-bold text-purple-400">14</div>
-            <div class="text-xs text-gray-400">Days left</div>
+            <!-- Center dot -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div
+                class="w-10 h-10 bg-gray-950 rounded-full border-2 border-primary-500 z-10 flex items-center justify-center text-lg"
+                id="center-icon">♪</div>
+            </div>
           </div>
         </div>
-        <button onclick="closeModal()"
-          class="mt-5 w-full bg-brand-500 hover:bg-brand-600 font-semibold py-2.5 rounded-xl transition">Close</button>
-      </div>
-    </div>
-  </div>
 
-  <div id="notif-panel"
-    class="hidden fixed top-16 right-4 z-40 w-80 glass rounded-2xl shadow-2xl border border-white/10 animate-fade-in">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
-      <h3 class="font-semibold text-sm">Notifications</h3>
-      <button onclick="clearNotifs()" class="text-xs text-brand-400 hover:text-brand-300 transition">Clear all</button>
-    </div>
-    <div id="notif-list" class="max-h-72 overflow-y-auto divide-y divide-white/5"></div>
-  </div>
-
-
-<div class="flex min-h-[calc(100vh-4rem)]">
-
-  <aside id="sidebar" class="hidden lg:flex flex-col fixed lg:static top-16 left-0 bottom-0 w-56 glass border-r border-white/5 z-30 p-4 gap-1">
-    <button onclick="openSection('dashboard')" data-nav="dashboard" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition bg-white/10 text-white">📊 Dashboard</button>
-    <button onclick="openSection('analytics')" data-nav="analytics" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition hover:bg-white/10 text-gray-400">📈 Analytics</button>
-    <button onclick="openSection('search')" data-nav="search" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition hover:bg-white/10 text-gray-400">🔍 Search</button>
-    <button onclick="openSection('uploads')" data-nav="uploads" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition hover:bg-white/10 text-gray-400">📁 Uploads</button>
-    <button onclick="openSection('form')" data-nav="form" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition hover:bg-white/10 text-gray-400">📝 Smart Form</button>
-    <button onclick="openSection('tools')" data-nav="tools" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition hover:bg-white/10 text-gray-400">🛠 Tools</button>
-    <button onclick="openSection('settings')" data-nav="settings" class="nav-btn flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium w-full text-left transition hover:bg-white/10 text-gray-400">⚙️ Settings</button>
-    <div class="mt-auto pt-4 border-t border-white/5">
-      <div class="glass rounded-xl p-3 text-center">
-        <p class="text-xs text-gray-400">Pro Trial</p>
-        <div class="w-full bg-white/10 h-1.5 rounded-full mt-2"><div class="bg-brand-500 h-1.5 rounded-full w-[70%]"></div></div>
-        <p class="text-xs text-gray-400 mt-1">10 of 14 days left</p>
-      </div>
-    </div>
-  </aside>
-
-  <main class="flex-1 p-4 md:p-8 overflow-y-auto max-w-full">
-
-    <section id="sec-dashboard" class="space-y-6">
-      <div class="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 class="text-2xl font-bold">Dashboard <span class="grad">Overview</span></h1>
-          <p class="text-gray-400 text-sm mt-0.5">Last updated: <span id="last-updated" class="text-brand-400"></span></p>
+        <!-- Title & Artist -->
+        <div class="text-center">
+          <h2 id="now-title" class="text-2xl font-bold truncate mb-1"></h2>
+          <p id="now-artist" class="text-gray-400 text-sm"></p>
         </div>
-        <button onclick="refreshMetrics()" id="refresh-btn" class="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-sm font-semibold px-4 py-2 rounded-xl transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0114.13-4M20 15a9 9 0 01-14.13 4"/></svg>
-          Refresh
-        </button>
-      </div>
-      <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="glass rounded-2xl p-5 reveal hover:-translate-y-1 transition-transform"><div class="flex items-center justify-between mb-3"><span class="text-2xl">👥</span><span class="text-xs text-green-400 font-semibold bg-green-400/10 px-2 py-0.5 rounded-full">+12%</span></div><div id="m-users" class="text-3xl font-bold">—</div><div class="text-xs text-gray-400 mt-1">Total Users</div></div>
-        <div class="glass rounded-2xl p-5 reveal hover:-translate-y-1 transition-transform"><div class="flex items-center justify-between mb-3"><span class="text-2xl">💰</span><span class="text-xs text-green-400 font-semibold bg-green-400/10 px-2 py-0.5 rounded-full">+8%</span></div><div id="m-revenue" class="text-3xl font-bold">—</div><div class="text-xs text-gray-400 mt-1">Monthly Revenue</div></div>
-        <div class="glass rounded-2xl p-5 reveal hover:-translate-y-1 transition-transform"><div class="flex items-center justify-between mb-3"><span class="text-2xl">📦</span><span class="text-xs text-yellow-400 font-semibold bg-yellow-400/10 px-2 py-0.5 rounded-full">-2%</span></div><div id="m-orders" class="text-3xl font-bold">—</div><div class="text-xs text-gray-400 mt-1">Orders This Month</div></div>
-        <div class="glass rounded-2xl p-5 reveal hover:-translate-y-1 transition-transform"><div class="flex items-center justify-between mb-3"><span class="text-2xl">⭐</span><span class="text-xs text-green-400 font-semibold bg-green-400/10 px-2 py-0.5 rounded-full">+0.3</span></div><div id="m-nps" class="text-3xl font-bold">—</div><div class="text-xs text-gray-400 mt-1">NPS Score</div></div>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div class="glass rounded-2xl p-5 lg:col-span-2 reveal">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="font-semibold">Revenue Trend</h3>
-            <select id="chart-range" onchange="updateChart()" class="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs outline-none focus:border-brand-500"><option value="7">7 days</option><option value="30" selected>30 days</option><option value="90">90 days</option></select>
-          </div>
-          <canvas id="revenue-chart" height="180"></canvas>
-        </div>
-        <div class="glass rounded-2xl p-5 reveal">
-          <h3 class="font-semibold mb-4">Traffic Sources</h3>
-          <canvas id="donut-chart" height="200"></canvas>
-          <div id="donut-legend" class="mt-3 space-y-1.5 text-xs"></div>
-        </div>
-      </div>
-      <div class="glass rounded-2xl p-5 reveal">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <h3 class="font-semibold">Recent Orders</h3>
-          <input id="table-filter" type="text" placeholder="Filter orders…" class="bg-white/5 border border-white/10 rounded-xl px-3 py-1.5 text-sm outline-none focus:border-brand-500 transition w-full sm:w-48"/>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead><tr class="text-left text-gray-400 border-b border-white/5">
-              <th class="pb-2 pr-4 cursor-pointer hover:text-white transition" onclick="sortTable('id')"># ID</th>
-              <th class="pb-2 pr-4 cursor-pointer hover:text-white transition" onclick="sortTable('customer')">Customer</th>
-              <th class="pb-2 pr-4 cursor-pointer hover:text-white transition" onclick="sortTable('amount')">Amount</th>
-              <th class="pb-2 pr-4 cursor-pointer hover:text-white transition" onclick="sortTable('status')">Status</th>
-              <th class="pb-2">Date</th>
-            </tr></thead>
-            <tbody id="orders-table" class="divide-y divide-white/5"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
 
-    <section id="sec-analytics" class="hidden space-y-6">
-      <h1 class="text-2xl font-bold">Analytics <span class="grad">Deep Dive</span></h1>
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="glass rounded-2xl p-5 reveal"><h3 class="font-semibold mb-4">User Growth</h3><canvas id="growth-chart" height="220"></canvas></div>
-        <div class="glass rounded-2xl p-5 reveal"><h3 class="font-semibold mb-4">Conversion Rate</h3><canvas id="bar-chart" height="220"></canvas></div>
-      </div>
-      <div class="glass rounded-2xl p-5 reveal">
-        <h3 class="font-semibold mb-4">Geographic Distribution</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="geo-list"></div>
-      </div>
-    </section>
-
-   
-    <section id="sec-search" class="hidden space-y-6">
-      <h1 class="text-2xl font-bold">Search <span class="grad">Everything</span></h1>
-      <div class="relative">
-        <svg class="absolute left-4 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
-        <input id="main-search" type="text" placeholder="Search users, orders, products… (min 2 chars)" class="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-4 py-3.5 text-base outline-none focus:border-brand-500 transition"/>
-      </div>
-      <div id="search-skeleton" class="hidden space-y-3"><div class="skeleton h-16 rounded-xl"></div><div class="skeleton h-16 rounded-xl"></div><div class="skeleton h-16 rounded-xl"></div></div>
-      <div id="search-results" class="space-y-2"></div>
-      <div id="search-empty" class="hidden text-center py-16"><div class="text-6xl mb-3">🔍</div><p class="text-gray-400">No results found. Try a different term.</p></div>
-    </section>
-
-  
-    <section id="sec-uploads" class="hidden space-y-6">
-      <h1 class="text-2xl font-bold">File <span class="grad">Uploads</span></h1>
-      <div id="drop-zone" class="border-2 border-dashed border-white/20 rounded-2xl p-12 text-center cursor-pointer hover:border-brand-500 hover:bg-brand-500/5 transition" role="button">
-        <div class="text-5xl mb-3">📂</div>
-        <p class="font-semibold mb-1">Drag & drop files here</p>
-        <p class="text-sm text-gray-400 mb-4">or click to browse • PNG, JPG, PDF, ZIP up to 10MB</p>
-        <input id="file-input" type="file" class="hidden" multiple accept="image/*,.pdf,.zip"/>
-        <button onclick="document.getElementById('file-input').click()" class="bg-brand-500 hover:bg-brand-600 px-5 py-2 rounded-xl font-semibold text-sm transition">Choose Files</button>
-      </div>
-      <div id="file-preview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    </section>
-
-  
-    <section id="sec-form" class="hidden space-y-6 max-w-2xl">
-      <h1 class="text-2xl font-bold">Smart <span class="grad">Form</span></h1>
-      <div class="flex items-center gap-2">
-        <div class="step-ind flex items-center gap-1.5 text-xs font-medium text-brand-400" data-step="1"><div class="w-5 h-5 rounded-full bg-brand-500 flex items-center justify-center text-white text-xs">1</div> Personal</div>
-        <div class="flex-1 h-px bg-white/10"></div>
-        <div class="step-ind flex items-center gap-1.5 text-xs font-medium text-gray-500" data-step="2"><div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs">2</div> Company</div>
-        <div class="flex-1 h-px bg-white/10"></div>
-        <div class="step-ind flex items-center gap-1.5 text-xs font-medium text-gray-500" data-step="3"><div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-xs">3</div> Preferences</div>
-      </div>
-      <div class="glass rounded-2xl p-6">
-        <div id="fstep-1" class="space-y-4">
-          <h3 class="font-semibold text-lg">Personal Information</h3>
-          <div class="grid grid-cols-2 gap-4">
-            <div><label class="block text-xs text-gray-400 mb-1.5">First Name</label><input id="f-fname" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition" placeholder="John"/></div>
-            <div><label class="block text-xs text-gray-400 mb-1.5">Last Name</label><input id="f-lname" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition" placeholder="Doe"/></div>
-          </div>
-          <div><label class="block text-xs text-gray-400 mb-1.5">Phone</label><input id="f-phone" type="tel" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition" placeholder="+1 555 000-0000"/></div>
-          <div><label class="block text-xs text-gray-400 mb-1.5">Bio</label><textarea id="f-bio" rows="3" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition resize-none" placeholder="Tell us about yourself…"></textarea></div>
+        <!-- Audio Visualizer -->
+        <div class="relative w-full h-16 flex items-center justify-center overflow-hidden">
+          <canvas id="visualizer" class="w-full h-full"></canvas>
         </div>
-        <div id="fstep-2" class="hidden space-y-4">
-          <h3 class="font-semibold text-lg">Company Details</h3>
-          <div><label class="block text-xs text-gray-400 mb-1.5">Company Name</label><input id="f-company" type="text" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition" placeholder="Acme Corp"/></div>
-          <div><label class="block text-xs text-gray-400 mb-1.5">Website</label><input id="f-website" type="url" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition" placeholder="https://acme.com"/></div>
-          <div><label class="block text-xs text-gray-400 mb-1.5">Team Size</label><select id="f-team" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition"><option value="">Select size</option><option>1-10</option><option>11-50</option><option>51-200</option><option>200+</option></select></div>
-        </div>
-        <div id="fstep-3" class="hidden space-y-4">
-          <h3 class="font-semibold text-lg">Preferences</h3>
-          <div class="space-y-3">
-            <label class="flex items-center gap-3 cursor-pointer"><input id="f-newsletter" type="checkbox" class="accent-brand-500 w-4 h-4"/><span class="text-sm">Receive product updates via email</span></label>
-            <label class="flex items-center gap-3 cursor-pointer"><input id="f-analytics" type="checkbox" checked class="accent-brand-500 w-4 h-4"/><span class="text-sm">Help improve NexusApp with usage analytics</span></label>
-            <label class="flex items-center gap-3 cursor-pointer"><input id="f-beta" type="checkbox" class="accent-brand-500 w-4 h-4"/><span class="text-sm">Join beta program for early features</span></label>
-          </div>
-          <div><label class="block text-xs text-gray-400 mb-1.5">Preferred Language</label><select id="f-lang" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition"><option>English</option><option>Portuguese</option><option>Spanish</option><option>French</option></select></div>
-          <div class="glass rounded-xl p-4 text-center"><div class="text-3xl mb-2">🎉</div><p class="font-semibold">Ready to submit!</p><p class="text-xs text-gray-400 mt-1">Your progress is auto-saved</p></div>
-        </div>
-        <div class="flex justify-between mt-6">
-          <button id="form-back" onclick="formStep(-1)" class="hidden px-5 py-2 rounded-xl border border-white/10 text-sm font-medium hover:bg-white/10 transition">← Back</button>
-          <div class="ml-auto flex gap-2">
-            <button id="form-next" onclick="formStep(1)" class="bg-brand-500 hover:bg-brand-600 px-5 py-2 rounded-xl text-sm font-semibold transition">Next →</button>
-            <button id="form-submit" onclick="submitForm()" class="hidden bg-green-600 hover:bg-green-700 px-5 py-2 rounded-xl text-sm font-semibold transition">✓ Submit</button>
+
+        <!-- Progress bar -->
+        <div class="space-y-1">
+          <input id="progress" type="range" min="0" max="100" value="0" class="progress-bar w-full"
+            aria-label="Progresso da música" />
+          <div class="flex justify-between text-xs text-gray-500">
+            <span id="time-current">0:00</span>
+            <span id="time-total">0:00</span>
           </div>
         </div>
-        <p class="text-xs text-gray-500 mt-3 text-center">💾 Auto-saved to local storage</p>
-      </div>
-    </section>
 
-    
-    <section id="sec-tools" class="hidden space-y-6">
-      <h1 class="text-2xl font-bold">Productivity <span class="grad">Tools</span></h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        
-        <div class="glass rounded-2xl p-5 reveal">
-          <h3 class="font-semibold mb-4">🧮 Calculator</h3>
-          <div id="calc-display" class="bg-black/30 rounded-xl px-4 py-3 text-right text-2xl font-mono mb-3 min-h-[3rem] flex items-center justify-end truncate">0</div>
-          <div class="grid grid-cols-4 gap-2">
-            <button onclick="calcInput('clear')" class="col-span-2 bg-red-500/20 hover:bg-red-500/40 text-red-400 rounded-xl py-2.5 text-sm font-semibold transition">AC</button>
-            <button onclick="calcInput('%')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">%</button>
-            <button onclick="calcInput('/')" class="bg-brand-500/30 hover:bg-brand-500/50 text-brand-400 rounded-xl py-2.5 text-sm font-semibold transition">÷</button>
-            <button onclick="calcInput('7')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">7</button>
-            <button onclick="calcInput('8')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">8</button>
-            <button onclick="calcInput('9')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">9</button>
-            <button onclick="calcInput('*')" class="bg-brand-500/30 hover:bg-brand-500/50 text-brand-400 rounded-xl py-2.5 text-sm font-semibold transition">×</button>
-            <button onclick="calcInput('4')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">4</button>
-            <button onclick="calcInput('5')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">5</button>
-            <button onclick="calcInput('6')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">6</button>
-            <button onclick="calcInput('-')" class="bg-brand-500/30 hover:bg-brand-500/50 text-brand-400 rounded-xl py-2.5 text-sm font-semibold transition">−</button>
-            <button onclick="calcInput('1')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">1</button>
-            <button onclick="calcInput('2')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">2</button>
-            <button onclick="calcInput('3')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">3</button>
-            <button onclick="calcInput('+')" class="bg-brand-500/30 hover:bg-brand-500/50 text-brand-400 rounded-xl py-2.5 text-sm font-semibold transition">+</button>
-            <button onclick="calcInput('0')" class="col-span-2 bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">0</button>
-            <button onclick="calcInput('.')" class="bg-white/5 hover:bg-white/10 rounded-xl py-2.5 text-sm font-semibold transition">.</button>
-            <button onclick="calcInput('=')" class="bg-brand-500 hover:bg-brand-600 rounded-xl py-2.5 text-sm font-semibold transition">=</button>
-          </div>
-        </div>
-        
-        <div class="glass rounded-2xl p-5 reveal text-center">
-          <h3 class="font-semibold mb-4">🍅 Pomodoro Timer</h3>
-          <div class="relative w-32 h-32 mx-auto mb-4">
-            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="6"/>
-              <circle id="pomo-ring" cx="50" cy="50" r="45" fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round" stroke-dasharray="282.7" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/>
+        <!-- Controls -->
+        <div class="flex items-center justify-center gap-4 md:gap-6">
+          <!-- Shuffle -->
+          <button id="btn-shuffle" onclick="toggleShuffle()" aria-label="Aleatório" title="Aleatório"
+            class="btn-icon p-2 rounded-xl text-gray-400 hover:text-white transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4l4 4m12-4h-4a8 8 0 00-7 4M4 20h4a8 8 0 007-4m0 0l4 4m-4-4l4-4" />
             </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <div id="pomo-time" class="text-2xl font-bold font-mono">25:00</div>
-              <div id="pomo-label" class="text-xs text-brand-400">Focus</div>
-            </div>
-          </div>
-          <div class="flex gap-2 justify-center mb-4">
-            <button onclick="pomoAction('start')" id="pomo-start" class="bg-brand-500 hover:bg-brand-600 px-4 py-1.5 rounded-lg text-sm font-semibold transition">▶ Start</button>
-            <button onclick="pomoAction('reset')" class="bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-lg text-sm font-semibold transition">↺ Reset</button>
-          </div>
-          <div class="flex gap-2 justify-center flex-wrap">
-            <button onclick="setPomoMode(25,'Focus')" class="text-xs px-3 py-1 rounded-lg bg-brand-500/20 text-brand-400 hover:bg-brand-500/40 transition">25m Focus</button>
-            <button onclick="setPomoMode(5,'Break')" class="text-xs px-3 py-1 rounded-lg bg-green-500/20 text-green-400 hover:bg-green-500/40 transition">5m Break</button>
-            <button onclick="setPomoMode(15,'Long')" class="text-xs px-3 py-1 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/40 transition">15m Long</button>
-          </div>
-          <p class="text-xs text-gray-400 mt-3">Sessions today: <span id="pomo-sessions" class="text-brand-400 font-semibold">0</span></p>
-        </div>
-        
-        <div class="glass rounded-2xl p-5 reveal">
-          <h3 class="font-semibold mb-4">📱 QR Code Generator</h3>
-          <input id="qr-input" type="text" placeholder="Enter URL or text…" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500 transition mb-3" value="https://nexusapp.vercel.app"/>
-          <button onclick="generateQR()" class="w-full bg-brand-500 hover:bg-brand-600 py-2 rounded-xl text-sm font-semibold transition mb-4">Generate QR</button>
-          <div id="qr-output" class="flex justify-center bg-white rounded-xl p-3 min-h-[140px] items-center"><canvas id="qr-canvas"></canvas></div>
-          <button onclick="downloadQR()" class="w-full mt-3 bg-white/5 hover:bg-white/10 py-2 rounded-xl text-sm font-medium transition">⬇ Download</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="sec-settings" class="hidden space-y-6 max-w-xl">
-      <h1 class="text-2xl font-bold">App <span class="grad">Settings</span></h1>
-      <div class="glass rounded-2xl p-6 space-y-5">
-        <div>
-          <h3 class="font-semibold mb-3">Accent Color</h3>
-          <div class="flex gap-3 flex-wrap">
-            <button onclick="setAccent('#6366f1')" class="w-8 h-8 rounded-full bg-indigo-500 ring-2 ring-white/50 hover:scale-110 transition-transform" title="Indigo"></button>
-            <button onclick="setAccent('#8b5cf6')" class="w-8 h-8 rounded-full bg-violet-500 hover:scale-110 transition-transform" title="Violet"></button>
-            <button onclick="setAccent('#ec4899')" class="w-8 h-8 rounded-full bg-pink-500 hover:scale-110 transition-transform" title="Pink"></button>
-            <button onclick="setAccent('#14b8a6')" class="w-8 h-8 rounded-full bg-teal-500 hover:scale-110 transition-transform" title="Teal"></button>
-            <button onclick="setAccent('#f59e0b')" class="w-8 h-8 rounded-full bg-amber-500 hover:scale-110 transition-transform" title="Amber"></button>
-            <button onclick="setAccent('#10b981')" class="w-8 h-8 rounded-full bg-emerald-500 hover:scale-110 transition-transform" title="Emerald"></button>
-          </div>
-        </div>
-        <hr class="border-white/10"/>
-        <div class="flex items-center justify-between">
-          <div><p class="font-medium text-sm">Dark Mode</p><p class="text-xs text-gray-400">Toggle light/dark theme</p></div>
-          <button onclick="toggleDark()" class="w-12 h-6 bg-brand-500 rounded-full relative transition-colors">
-            <div id="dark-knob" class="absolute top-1 right-1 w-4 h-4 bg-white rounded-full transition-all"></div>
+          </button>
+          <!-- Previous -->
+          <button onclick="prevTrack()" aria-label="Anterior" title="Anterior"
+            class="btn-icon p-3 rounded-xl text-gray-300 hover:text-white transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+            </svg>
+          </button>
+          <!-- Play/Pause -->
+          <button id="btn-play" onclick="togglePlay()" aria-label="Play/Pause"
+            class="btn-icon w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-500 flex items-center justify-center shadow-lg neon-glow transition">
+            <svg id="icon-play" class="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg id="icon-pause" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+          </button>
+          <!-- Next -->
+          <button onclick="nextTrack()" aria-label="Próxima" title="Próxima"
+            class="btn-icon p-3 rounded-xl text-gray-300 hover:text-white transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+            </svg>
+          </button>
+          <!-- Repeat -->
+          <button id="btn-repeat" onclick="cycleRepeat()" aria-label="Repetir" title="Repetir"
+            class="btn-icon p-2 rounded-xl text-gray-400 hover:text-white transition relative">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h5m11 4a9 9 0 01-9 9 9.005 9.005 0 01-8.716-6.747M20 9v5h-5" />
+            </svg>
+            <span id="repeat-badge"
+              class="hidden absolute -top-1 -right-1 w-4 h-4 bg-primary-500 rounded-full text-[9px] flex items-center justify-center font-bold">1</span>
           </button>
         </div>
-        <hr class="border-white/10"/>
-        <div>
-          <p class="font-medium text-sm mb-2">Keyboard Shortcuts</p>
-          <div class="space-y-1.5 text-xs text-gray-400">
-            <div class="flex justify-between"><span>Open Search</span><kbd class="bg-white/10 px-2 py-0.5 rounded font-mono">K</kbd></div>
-            <div class="flex justify-between"><span>Close Modal</span><kbd class="bg-white/10 px-2 py-0.5 rounded font-mono">Esc</kbd></div>
-            <div class="flex justify-between"><span>Dashboard</span><kbd class="bg-white/10 px-2 py-0.5 rounded font-mono">G D</kbd></div>
-            <div class="flex justify-between"><span>Tools</span><kbd class="bg-white/10 px-2 py-0.5 rounded font-mono">G T</kbd></div>
+
+        <!-- Volume & Extra -->
+        <div class="flex items-center gap-4">
+          <button onclick="toggleMute()" id="vol-icon"
+            class="btn-icon text-gray-400 hover:text-white transition text-lg flex-shrink-0">🔊</button>
+          <input id="volume" type="range" min="0" max="100" value="80" class="vol-bar flex-1" aria-label="Volume" />
+          <span id="vol-pct" class="text-xs text-gray-500 w-8 text-right">80%</span>
+          <div class="flex gap-2 ml-2">
+            <!-- Keyboard shortcuts hint -->
+            <button onclick="showShortcuts()" title="Atalhos"
+              class="btn-icon p-2 rounded-xl text-gray-500 hover:text-white transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 3v1m0 16v1m8.66-13l-.87.5M4.21 18.5l-.87.5M20.66 18.5l-.87-.5M4.21 5.5l-.87-.5M21 12h-1M4 12H3" />
+              </svg>
+            </button>
+            <!-- Download current as playlist JSON -->
+            <button onclick="exportPlaylist()" title="Exportar info da playlist"
+              class="btn-icon p-2 rounded-xl text-gray-500 hover:text-white transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
           </div>
         </div>
-        <hr class="border-white/10"/>
-        <button onclick="exportData()" class="w-full bg-white/5 hover:bg-white/10 py-2.5 rounded-xl text-sm font-medium transition">📦 Export All Data as JSON</button>
-        <button onclick="clearAllData()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 py-2.5 rounded-xl text-sm font-medium transition">⚠ Clear All Local Data</button>
-      </div>
-    </section>
 
-  </main>
+      </div><!-- end now-playing -->
+    </main>
+  </div>
+
+  <!-- ===== SHORTCUTS MODAL ===== -->
+  <div id="shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeShortcuts()"></div>
+    <div class="relative glass rounded-2xl w-full max-w-sm p-6 animate-fade-in border border-white/10">
+      <button onclick="closeShortcuts()"
+        class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-lg">✕</button>
+      <h3 class="font-bold text-lg mb-4">⌨️ Atalhos de teclado</h3>
+      <div class="space-y-2 text-sm">
+        <div class="flex justify-between"><span class="text-gray-400">Play / Pause</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">Espaço</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Próxima</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">→</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Anterior</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">←</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Volume +</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">↑</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Volume -</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">↓</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Mudo</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">M</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Aleatório</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">S</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">Repetir</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">R</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">+10 segundos</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">L</kbd></div>
+        <div class="flex justify-between"><span class="text-gray-400">-10 segundos</span><kbd
+            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">J</kbd></div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="audio-player" preload="metadata"></audio>
+
+<!-- ===== AUTH MODAL ===== -->
+<div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+  <div class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in border border-white/10 shadow-2xl">
+    <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl">✕</button>
+
+    <!-- Login -->
+    <div id="auth-login">
+      <div class="text-center mb-6">
+        <div class="text-4xl mb-2">🎵</div>
+        <h2 class="text-2xl font-bold">Bem-vindo de volta</h2>
+        <p class="text-gray-400 text-sm mt-1">Entre na sua conta MusicFlow</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1.5">E-mail</label>
+          <input id="l-email" type="email" placeholder="voce@email.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
+          <p id="l-email-err" class="text-red-400 text-xs mt-1 hidden">E-mail inválido.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1.5">Senha</label>
+          <div class="relative">
+            <input id="l-pass" type="password" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm outline-none focus:border-primary-500 transition"/>
+            <button type="button" onclick="toggleVis('l-pass')" class="absolute right-3 top-2.5 text-gray-400 hover:text-white text-sm">👁</button>
+          </div>
+          <p id="l-pass-err" class="text-red-400 text-xs mt-1 hidden">Mínimo 6 caracteres.</p>
+        </div>
+        <label class="flex items-center gap-2 cursor-pointer text-sm"><input id="l-remember" type="checkbox" class="accent-primary-500"/> Lembrar de mim</label>
+        <button id="l-btn" onclick="doLogin()" class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">Entrar</button>
+      </div>
+      <p class="text-center text-sm text-gray-400 mt-5">Sem conta? <button onclick="switchAuth('register')" class="text-primary-400 hover:text-primary-300 font-medium">Criar conta</button></p>
+    </div>
+
+    <!-- Register -->
+    <div id="auth-register" class="hidden">
+      <div class="text-center mb-6">
+        <div class="text-4xl mb-2">🚀</div>
+        <h2 class="text-2xl font-bold">Criar conta</h2>
+        <p class="text-gray-400 text-sm mt-1">14 dias grátis — sem cartão</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1.5">Nome</label>
+          <input id="r-name" type="text" placeholder="Seu nome" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
+          <p id="r-name-err" class="text-red-400 text-xs mt-1 hidden">Nome obrigatório.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1.5">E-mail</label>
+          <input id="r-email" type="email" placeholder="voce@email.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
+          <p id="r-email-err" class="text-red-400 text-xs mt-1 hidden">E-mail inválido.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-1.5">Senha</label>
+          <input id="r-pass" type="password" placeholder="Mín. 6 caracteres" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
+          <div id="r-strength" class="h-1 rounded-full mt-1.5 transition-all w-0 bg-red-500"></div>
+          <p id="r-pass-err" class="text-red-400 text-xs mt-1 hidden">Mínimo 6 caracteres.</p>
+        </div>
+        <button id="r-btn" onclick="doRegister()" class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition">Criar conta grátis</button>
+      </div>
+      <p class="text-center text-sm text-gray-400 mt-5">Já tem conta? <button onclick="switchAuth('login')" class="text-primary-400 hover:text-primary-300 font-medium">Entrar</button></p>
+    </div>
+
+    <!-- Profile -->
+    <div id="auth-profile" class="hidden text-center">
+      <img id="p-avatar" src="" class="w-20 h-20 rounded-full mx-auto mb-4 ring-4 ring-primary-500 object-cover" alt=""/>
+      <h2 id="p-name" class="text-xl font-bold"></h2>
+      <p id="p-email" class="text-gray-400 text-sm mb-1"></p>
+      <span id="p-plan-badge" class="inline-block text-xs px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 font-semibold mb-5">⭐ Premium</span>
+      <div class="grid grid-cols-3 gap-3 mb-5">
+        <div class="glass rounded-xl p-3"><div id="p-tracks" class="text-xl font-bold text-primary-400">0</div><div class="text-xs text-gray-400">Músicas</div></div>
+        <div class="glass rounded-xl p-3"><div id="p-time" class="text-xl font-bold text-green-400">0h</div><div class="text-xs text-gray-400">Ouvidas</div></div>
+        <div class="glass rounded-xl p-3"><div id="p-days" class="text-xl font-bold text-pink-400">14</div><div class="text-xs text-gray-400">Dias trial</div></div>
+      </div>
+      <button onclick="closeAuthModal()" class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition mb-2">Fechar</button>
+      <button onclick="doLogout()" class="w-full text-red-400 hover:bg-red-500/10 py-2 rounded-xl text-sm transition">Sair da conta</button>
+    </div>
+  </div>
 </div>
 
-<script>
+<!-- ===== PREMIUM MODAL ===== -->
+<div id="premium-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closePremium()"></div>
+  <div class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in border border-yellow-500/30 shadow-2xl">
+    <button onclick="closePremium()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl">✕</button>
+    <div class="text-center mb-6">
+      <div class="text-5xl mb-3">👑</div>
+      <h2 class="text-2xl font-bold">MusicFlow <span class="grad">Premium</span></h2>
+      <p class="text-gray-400 text-sm mt-1">Desbloqueie o melhor da música</p>
+    </div>
+    <div class="space-y-3 mb-6 text-sm">
+      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Visualizador de áudio em tempo real</span></div>
+      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Modo offline com cache avançado</span></div>
+      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Equalizer customizável (10 bandas)</span></div>
+      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Estatísticas de reprodução detalhadas</span></div>
+      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Playlists ilimitadas e smart shuffle</span></div>
+      <div class="flex items-center gap-3 text-gray-500"><span>✗</span><span>Anúncios (nunca)</span></div>
+    </div>
+    <div class="grid grid-cols-2 gap-3 mb-5">
+      <div class="glass rounded-xl p-4 text-center cursor-pointer hover:border-primary-500 border border-transparent transition" onclick="selectPlan('monthly')">
+        <div class="text-2xl font-bold">R$9<span class="text-base font-normal text-gray-400">/mês</span></div>
+        <div class="text-xs text-gray-400 mt-1">Plano Mensal</div>
+      </div>
+      <div class="glass rounded-xl p-4 text-center cursor-pointer hover:border-primary-500 border border-primary-500 transition relative" onclick="selectPlan('yearly')">
+        <div class="absolute -top-2 left-1/2 -translate-x-1/2 bg-green-500 text-xs font-bold px-2 py-0.5 rounded-full">SALVE 40%</div>
+        <div class="text-2xl font-bold">R$65<span class="text-base font-normal text-gray-400">/ano</span></div>
+        <div class="text-xs text-gray-400 mt-1">Plano Anual</div>
+      </div>
+    </div>
+    <button onclick="activatePremium()" class="w-full bg-gradient-to-r from-primary-600 to-pink-600 hover:opacity-90 font-semibold py-3 rounded-xl transition text-base">
+      ⭐ Começar trial grátis de 14 dias
+    </button>
+    <p class="text-center text-xs text-gray-500 mt-3">Cancele a qualquer momento • Sem cartão no trial</p>
+  </div>
+</div>
 
-(function() {
+<!-- ===== USER BTN (injected in header) — handled by JS ===== -->
+
+<script>
+(function(){
 'use strict';
 
-const STORAGE_KEYS = { USER:'nx_user', DARK:'nx_dark', ACCENT:'nx_accent', FORM:'nx_form', UPLOADS:'nx_uploads', POMO_SESSIONS:'nx_pomo' };
-const MOCK_USERS = [
-  {id:1,name:'Alice Johnson',email:'alice@acme.com',role:'Admin'},
-  {id:2,name:'Bob Smith',email:'bob@corp.com',role:'Manager'},
-  {id:3,name:'Carol White',email:'carol@nexus.io',role:'Developer'},
-  {id:4,name:'Dave Brown',email:'dave@startup.com',role:'Designer'},
-  {id:5,name:'Eva Green',email:'eva@lab.ai',role:'Analyst'},
-];
-const MOCK_PRODUCTS = [
-  {name:'NexusApp Pro',category:'SaaS',price:'$49/mo'},
-  {name:'Analytics Suite',category:'Tool',price:'$29/mo'},
-  {name:'Team Collab',category:'Collaboration',price:'$19/mo'},
-  {name:'Storage Vault',category:'Infrastructure',price:'$9/mo'},
-];
-const ORDER_STATUS = ['Completed','Processing','Pending','Cancelled'];
-const STATUS_COLORS = {Completed:'text-green-400 bg-green-400/10',Processing:'text-blue-400 bg-blue-400/10',Pending:'text-yellow-400 bg-yellow-400/10',Cancelled:'text-red-400 bg-red-400/10'};
-let orders = [], chartRevenue = null, chartDonut = null, chartGrowth = null, chartBar = null;
-let tableSortKey = 'id', tableSortDir = 1;
-let currentSection = 'dashboard', currentFormStep = 1;
-let calcExpr = '', calcNewNum = true;
-let pomoInterval = null, pomoSeconds = 25*60, pomoTotal = 25*60, pomoRunning = false, pomoSessions = 0;
-let notifList = [], notifCount = 0;
-let offlineQueue = [];
-let gKeyTimer = null;
+// ── STATE ──────────────────────────────────────────────────────────────
+const SK = {USER:'mf_user',PREFS:'mf_prefs',STATS:'mf_stats'};
+let tracks = [];        // {name, artist, duration, url, size}
+let currentIdx = -1;
+let isPlaying = false;
+let isShuffle = false;
+let repeatMode = 0;     // 0=off 1=all 2=one
+let isMuted = false;
+let prevVol = 80;
+let shuffleHistory = [];
+let totalListenSecs = 0;
+let statsInterval = null;
+let analyserNode = null, audioCtx = null, sourceNode = null, animFrame = null;
 
+const audio = document.getElementById('audio-player');
+const progressEl = document.getElementById('progress');
+const volEl = document.getElementById('volume');
+
+// ── INIT ──────────────────────────────────────────────────────────────
 function init() {
-  applyStoredTheme();
-  applyStoredAccent();
+  applyPrefs();
   restoreSession();
-  buildOrders();
-  updateMetrics();
-  setInterval(updateMetrics, 30000);
-  initCharts();
-  initSearch();
-  initUploadZone();
-  initRevealObserver();
+  initDropZone();
+  initFileInput();
+  initAudioEvents();
+  initProgressBar();
+  initVolumeBar();
   initKeyboard();
-  initConnectivity();
-  loadFormData();
-  renderNotifications();
-  updateTimestamp();
-  generateQR();
-
-  document.getElementById('sidebar-toggle').addEventListener('click', () => {
-    const sb = document.getElementById('sidebar');
-    sb.classList.toggle('hidden');
-    sb.classList.toggle('flex');
-  });
-
-  document.getElementById('user-menu-btn').addEventListener('click', () => {
-    const dd = document.getElementById('user-dropdown');
-    dd.classList.toggle('hidden');
-  });
-
-  document.getElementById('notif-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    document.getElementById('notif-panel').classList.toggle('hidden');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#user-menu-wrap')) document.getElementById('user-dropdown').classList.add('hidden');
-    if (!e.target.closest('#notif-btn') && !e.target.closest('#notif-panel')) document.getElementById('notif-panel').classList.add('hidden');
-  });
-
-  document.getElementById('nav-search').addEventListener('input', debounce(e => {
-    if (e.target.value.length >= 2) { openSection('search'); document.getElementById('main-search').value = e.target.value; performSearch(e.target.value); }
-  }, 300));
-
-  document.getElementById('table-filter').addEventListener('input', debounce(e => renderTable(e.target.value), 300));
-
-  document.getElementById('r-pass').addEventListener('input', e => updateStrength(e.target.value));
-
-  ['f-fname','f-lname','f-phone','f-bio','f-company','f-website','f-team','f-lang'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('input', saveFormData);
-  });
-
-  pomoSessions = parseInt(localStorage.getItem(STORAGE_KEYS.POMO_SESSIONS) || '0');
-  document.getElementById('pomo-sessions').textContent = pomoSessions;
-
-  setTimeout(() => addNotification('🚀 Welcome to NexusApp!', 'Your dashboard is ready.'), 3000);
-  setTimeout(() => addNotification('📈 Revenue up 8%', 'Great numbers this month!'), 8000);
+  renderUserNav();
+  // Mobile sidebar toggle if needed
+  window.addEventListener('resize', () => {});
 }
 
-function applyStoredTheme() {
-  const dark = localStorage.getItem(STORAGE_KEYS.DARK) !== 'false';
-  document.documentElement.classList.toggle('dark', dark);
-  document.getElementById('theme-toggle').textContent = dark ? '🌙' : '☀️';
+// ── PREFS (dark mode, volume) ──────────────────────────────────────────
+function applyPrefs() {
+  const p = JSON.parse(localStorage.getItem(SK.PREFS)||'{}');
+  if (p.dark === false) document.documentElement.classList.remove('dark');
+  if (p.vol != null) { volEl.value = p.vol; audio.volume = p.vol / 100; document.getElementById('vol-pct').textContent = p.vol + '%'; }
+  else { audio.volume = 0.8; }
 }
-window.toggleDark = function() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem(STORAGE_KEYS.DARK, isDark);
-  document.getElementById('theme-toggle').textContent = isDark ? '🌙' : '☀️';
+window.toggleTheme = function() {
+  const dark = document.documentElement.classList.toggle('dark');
+  document.getElementById('theme-btn').textContent = dark ? '🌙' : '☀️';
+  savePrefs({dark});
 };
-document.getElementById('theme-toggle').addEventListener('click', toggleDark);
-
-function applyStoredAccent() {
-  const a = localStorage.getItem(STORAGE_KEYS.ACCENT);
-  if (a) applyAccentColor(a);
-}
-window.setAccent = function(color) {
-  localStorage.setItem(STORAGE_KEYS.ACCENT, color);
-  applyAccentColor(color);
-  toast('🎨 Accent color updated!', 'success');
-};
-function applyAccentColor(color) {
-  document.documentElement.style.setProperty('--accent', color);
-
-  const style = document.getElementById('accent-style') || (() => { const s=document.createElement('style'); s.id='accent-style'; document.head.appendChild(s); return s; })();
-  style.textContent = `
-    .bg-brand-500{background-color:${color}!important}
-    .hover\\:bg-brand-600:hover{background-color:${color}cc!important}
-    .text-brand-400,.text-brand-500{color:${color}!important}
-    .border-brand-500{border-color:${color}!important}
-    .ring-brand-500{--tw-ring-color:${color}!important}
-    .bg-brand-500\\/30{background-color:${color}4d!important}
-  `;
+function savePrefs(patch) {
+  const p = JSON.parse(localStorage.getItem(SK.PREFS)||'{}');
+  localStorage.setItem(SK.PREFS, JSON.stringify({...p,...patch}));
 }
 
-window.toggleCompact = function() {
-  document.body.classList.toggle('compact');
-  toast('Layout updated', 'info');
-};
-
+// ── AUTH ──────────────────────────────────────────────────────────────
 function restoreSession() {
-  const saved = localStorage.getItem(STORAGE_KEYS.USER);
-  if (saved) { const u = JSON.parse(saved); loginUser(u, false); }
+  const u = JSON.parse(localStorage.getItem(SK.USER)||'null');
+  if (u) applyUser(u);
 }
-
-window.openModal = function(type) {
+window.openAuthModal = function(view='login') {
   document.getElementById('auth-modal').classList.remove('hidden');
-  ['form-login','form-register','form-profile'].forEach(id => document.getElementById(id).classList.add('hidden'));
-  document.getElementById(`form-${type}`).classList.remove('hidden');
-  if (type === 'profile') {
-    const u = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || '{}');
-    document.getElementById('modal-avatar').src = u.avatar || '';
-    document.getElementById('modal-uname').textContent = u.name;
-    document.getElementById('modal-uemail').textContent = u.email;
-    document.getElementById('p-uploads').textContent = JSON.parse(localStorage.getItem(STORAGE_KEYS.UPLOADS) || '[]').length;
-  }
+  ['auth-login','auth-register','auth-profile'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('auth-'+view).classList.remove('hidden');
+  if (view === 'profile') fillProfile();
 };
-window.closeModal = function() { document.getElementById('auth-modal').classList.add('hidden'); };
-window.switchForm = function(type) { openModal(type); };
-window.togglePass = function(id) { const el=document.getElementById(id); el.type = el.type==='password'?'text':'password'; };
+window.closeAuthModal = function() { document.getElementById('auth-modal').classList.add('hidden'); };
+window.switchAuth = function(v) { openAuthModal(v); };
+window.toggleVis = function(id) { const el=document.getElementById(id); el.type=el.type==='password'?'text':'password'; };
 
-function updateStrength(pass) {
-  const bar = document.getElementById('r-strength');
-  const len = pass.length;
-  const score = [/[A-Z]/.test(pass), /[0-9]/.test(pass), /[^a-zA-Z0-9]/.test(pass), len>=8].filter(Boolean).length;
-  const widths = ['0%','25%','50%','75%','100%'];
-  const colors = ['bg-red-500','bg-red-400','bg-yellow-400','bg-blue-400','bg-green-400'];
-  bar.className = `h-1 rounded-full mt-1.5 transition-all ${colors[score]}`;
-  bar.style.width = widths[score];
-}
-
-window.handleLogin = function() {
+window.doLogin = function() {
   const email = document.getElementById('l-email').value.trim();
   const pass = document.getElementById('l-pass').value;
   let ok = true;
-  document.getElementById('l-email-err').classList.toggle('hidden', /\S+@\S+\.\S+/.test(email));
-  if (!/\S+@\S+\.\S+/.test(email)) ok = false;
-  document.getElementById('l-pass-err').classList.toggle('hidden', pass.length >= 6);
-  if (pass.length < 6) ok = false;
-  if (!ok) return;
-  const btn = document.getElementById('l-btn');
-  btn.textContent = '⏳ Signing in…'; btn.disabled = true;
+  const emailOk = /\S+@\S+\.\S+/.test(email);
+  document.getElementById('l-email-err').classList.toggle('hidden', emailOk); if(!emailOk) ok=false;
+  const passOk = pass.length >= 6;
+  document.getElementById('l-pass-err').classList.toggle('hidden', passOk); if(!passOk) ok=false;
+  if(!ok) return;
+  const btn = document.getElementById('l-btn'); btn.textContent='⏳ Entrando…'; btn.disabled=true;
   setTimeout(() => {
-    const user = { name: email.split('@')[0].replace(/\./g,' ').replace(/\b\w/g,c=>c.toUpperCase()), email, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` };
-    if (document.getElementById('l-remember').checked) localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-    loginUser(user, true);
-    closeModal();
-    btn.textContent = 'Sign In'; btn.disabled = false;
+    const user = { name: email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), email, avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, plan:'premium', trialDays:14 };
+    if(document.getElementById('l-remember').checked) localStorage.setItem(SK.USER, JSON.stringify(user));
+    applyUser(user, true);
+    closeAuthModal();
+    btn.textContent='Entrar'; btn.disabled=false;
+  }, 1000);
+};
+
+window.doRegister = function() {
+  const name= document.getElementById('r-name').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const pass =document.getElementById('r-pass').value;
+  let ok=true;
+  document.getElementById('r-name-err').classList.toggle('hidden', name.length>0); if(!name) ok=false;
+  const emailOk=/\S+@\S+\.\S+/.test(email);
+  document.getElementById('r-email-err').classList.toggle('hidden', emailOk); if(!emailOk) ok=false;
+  const passOk=pass.length>=6;
+  document.getElementById('r-pass-err').classList.toggle('hidden', passOk); if(!passOk) ok=false;
+  if(!ok) return;
+  document.getElementById('r-pass').addEventListener('input', e=>{
+    const score=[/[A-Z]/.test(e.target.value),/[0-9]/.test(e.target.value),e.target.value.length>=8].filter(Boolean).length;
+    const bar=document.getElementById('r-strength');
+    bar.className=`h-1 rounded-full mt-1.5 transition-all ${['bg-red-500','bg-yellow-400','bg-green-400','bg-green-500'][score]}`;
+    bar.style.width=['25%','50%','75%','100%'][score];
+  });
+  const btn=document.getElementById('r-btn'); btn.textContent='⏳ Criando…'; btn.disabled=true;
+  setTimeout(()=>{
+    const user={name,email,avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,plan:'premium',trialDays:14};
+    localStorage.setItem(SK.USER, JSON.stringify(user));
+    applyUser(user, true);
+    closeAuthModal();
+    btn.textContent='Criar conta grátis'; btn.disabled=false;
   }, 1200);
 };
 
-window.handleRegister = function() {
-  const name = document.getElementById('r-name').value.trim();
-  const email = document.getElementById('r-email').value.trim();
-  const pass = document.getElementById('r-pass').value;
-  let ok = true;
-  document.getElementById('r-name-err').classList.toggle('hidden', name.length > 0);
-  if (!name) ok = false;
-  document.getElementById('r-email-err').classList.toggle('hidden', /\S+@\S+\.\S+/.test(email));
-  if (!/\S+@\S+\.\S+/.test(email)) ok = false;
-  document.getElementById('r-pass-err').classList.toggle('hidden', pass.length >= 6);
-  if (pass.length < 6) ok = false;
-  if (!ok) return;
-  const btn = document.getElementById('r-btn');
-  btn.textContent = '⏳ Creating account…'; btn.disabled = true;
-  setTimeout(() => {
-    const user = { name, email, avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}` };
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-    loginUser(user, true);
-    closeModal();
-    btn.textContent = 'Create Account'; btn.disabled = false;
-  }, 1400);
+function applyUser(user, showToast=false) {
+  renderUserNav(user);
+  if(showToast) toast(`👋 Olá, ${user.name.split(' ')[0]}!`, 'success');
+}
+window.doLogout = function() {
+  localStorage.removeItem(SK.USER);
+  renderUserNav(null);
+  closeAuthModal();
+  toast('👋 Saiu da conta', 'info');
 };
 
-function loginUser(user, showToast) {
-  document.getElementById('auth-buttons').classList.add('hidden');
-  document.getElementById('user-menu-wrap').classList.remove('hidden');
-  document.getElementById('user-avatar').src = user.avatar;
-  document.getElementById('user-name').textContent = user.name.split(' ')[0];
-  document.getElementById('dd-name').textContent = user.name;
-  document.getElementById('dd-email').textContent = user.email;
-  if (showToast) toast(`👋 Welcome back, ${user.name.split(' ')[0]}!`, 'success');
+function fillProfile() {
+  const u = JSON.parse(localStorage.getItem(SK.USER)||'{}');
+  const stats = JSON.parse(localStorage.getItem(SK.STATS)||'{}');
+  document.getElementById('p-avatar').src = u.avatar||'';
+  document.getElementById('p-name').textContent = u.name||'';
+  document.getElementById('p-email').textContent = u.email||'';
+  document.getElementById('p-plan-badge').textContent = u.plan==='premium' ? '⭐ Premium' : 'Plano Free';
+  document.getElementById('p-tracks').textContent = tracks.length;
+  const hrs = Math.floor((stats.secs||0)/3600);
+  document.getElementById('p-time').textContent = hrs + 'h';
+  document.getElementById('p-days').textContent = u.trialDays||0;
 }
 
-window.logout = function() {
-  localStorage.removeItem(STORAGE_KEYS.USER);
-  document.getElementById('auth-buttons').classList.remove('hidden');
-  document.getElementById('user-menu-wrap').classList.add('hidden');
-  document.getElementById('user-dropdown').classList.add('hidden');
-  toast('👋 Signed out successfully', 'info');
-};
-
-window.openSection = function(name) {
-  document.querySelectorAll('[id^="sec-"]').forEach(s => s.classList.add('hidden'));
-  document.getElementById(`sec-${name}`).classList.remove('hidden');
-  document.querySelectorAll('.nav-btn').forEach(b => {
-    const active = b.dataset.nav === name;
-    b.classList.toggle('bg-white/10', active);
-    b.classList.toggle('text-white', active);
-    b.classList.toggle('text-gray-400', !active);
-    b.classList.toggle('hover:bg-white/10', !active);
-  });
-  currentSection = name;
-  if (name === 'analytics' && !chartGrowth) initAnalyticsCharts();
-
-  setTimeout(() => document.querySelectorAll(`#sec-${name} .reveal`).forEach(el => el.classList.add('visible')), 50);
-
-  if (window.innerWidth < 1024) document.getElementById('sidebar').classList.add('hidden');
-};
-
-function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function updateMetrics() {
-  document.getElementById('m-users').textContent = (rand(12000, 14500)).toLocaleString();
-  document.getElementById('m-revenue').textContent = '$' + (rand(48000, 65000)).toLocaleString();
-  document.getElementById('m-orders').textContent = rand(1200, 1800).toLocaleString();
-  document.getElementById('m-nps').textContent = (rand(78, 95) / 10).toFixed(1);
-  updateTimestamp();
-}
-function updateTimestamp() {
-  document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
-}
-window.refreshMetrics = function() {
-  const btn = document.getElementById('refresh-btn');
-  btn.classList.add('opacity-50');
-  btn.querySelector('svg').classList.add('animate-spin');
-  setTimeout(() => { updateMetrics(); btn.classList.remove('opacity-50'); btn.querySelector('svg').classList.remove('animate-spin'); toast('✅ Metrics refreshed', 'success'); }, 800);
-};
-
-const NAMES = ['Alice Johnson','Bob Martinez','Carol Singh','Dave Kim','Eva Rossi','Frank Lee','Grace Park'];
-function buildOrders() {
-  orders = Array.from({length:20}, (_,i) => ({
-    id: `#${String(10000+i).padStart(5,'0')}`,
-    customer: NAMES[i % NAMES.length],
-    amount: '$' + rand(100,4999).toLocaleString(),
-    status: ORDER_STATUS[i % 4],
-    date: new Date(Date.now() - i*86400000*rand(1,5)).toLocaleDateString()
-  }));
-  renderTable('');
-}
-window.sortTable = function(key) {
-  if (tableSortKey === key) tableSortDir *= -1; else { tableSortKey = key; tableSortDir = 1; }
-  renderTable(document.getElementById('table-filter').value);
-};
-function renderTable(filter) {
-  const f = filter.toLowerCase();
-  const filtered = orders.filter(o => Object.values(o).some(v => String(v).toLowerCase().includes(f)));
-  filtered.sort((a,b) => String(a[tableSortKey]).localeCompare(String(b[tableSortKey])) * tableSortDir);
-  document.getElementById('orders-table').innerHTML = filtered.slice(0,10).map(o => `
-    <tr class="hover:bg-white/5 transition">
-      <td class="py-2.5 pr-4 font-mono text-xs text-brand-400">${o.id}</td>
-      <td class="py-2.5 pr-4 text-sm font-medium">${o.customer}</td>
-      <td class="py-2.5 pr-4 text-sm">${o.amount}</td>
-      <td class="py-2.5 pr-4"><span class="text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[o.status]}">${o.status}</span></td>
-      <td class="py-2.5 text-xs text-gray-400">${o.date}</td>
-    </tr>`).join('');
-}
-
-const CHART_DEFAULTS = {
-  color: 'rgba(255,255,255,0.1)',
-  grid: { color:'rgba(255,255,255,0.05)', drawBorder:false },
-  ticks: { color:'rgba(255,255,255,0.5)', font:{size:11} }
-};
-function makeLabels(days) {
-  return Array.from({length:days}, (_,i) => {
-    const d = new Date(); d.setDate(d.getDate() - (days-1-i));
-    return days > 31 ? d.toLocaleDateString('en',{month:'short'}) : d.toLocaleDateString('en',{month:'short',day:'numeric'});
-  });
-}
-function makeData(n, base, variance) {
-  let v=base; return Array.from({length:n},()=>{v+=rand(-variance,variance); return Math.max(v,base*0.5);});
-}
-
-function initCharts() {
-  const ctx1 = document.getElementById('revenue-chart').getContext('2d');
-  const days = 30; const labels = makeLabels(days); const data = makeData(days, 2000, 400);
-  chartRevenue = new Chart(ctx1, {type:'line', data:{labels, datasets:[{label:'Revenue ($)',data,borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,0.15)',fill:true,tension:0.4,pointRadius:0,pointHoverRadius:4}]}, options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{...CHART_DEFAULTS.grid,ticks:CHART_DEFAULTS.ticks},y:{...CHART_DEFAULTS.grid,ticks:{...CHART_DEFAULTS.ticks,callback:v=>'$'+v.toLocaleString()}}}}});
-
-  const ctx2 = document.getElementById('donut-chart').getContext('2d');
-  const donutData = [42,28,18,12]; const donutLabels = ['Organic','Direct','Referral','Social'];
-  const donutColors = ['#6366f1','#8b5cf6','#ec4899','#14b8a6'];
-  chartDonut = new Chart(ctx2, {type:'doughnut', data:{labels:donutLabels, datasets:[{data:donutData,backgroundColor:donutColors,borderWidth:0,hoverOffset:8}]}, options:{responsive:true,cutout:'70%',plugins:{legend:{display:false}}}});
-  document.getElementById('donut-legend').innerHTML = donutLabels.map((l,i)=>`<div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full" style="background:${donutColors[i]}"></div>${l}</div><span class="font-semibold">${donutData[i]}%</span></div>`).join('');
-}
-
-window.updateChart = function() {
-  const days = parseInt(document.getElementById('chart-range').value);
-  chartRevenue.data.labels = makeLabels(days);
-  chartRevenue.data.datasets[0].data = makeData(days, 2000, 400);
-  chartRevenue.update();
-};
-
-function initAnalyticsCharts() {
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const ctx3 = document.getElementById('growth-chart').getContext('2d');
-  chartGrowth = new Chart(ctx3, {type:'line', data:{labels:months, datasets:[{label:'Users',data:makeData(12,8000,1200),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',fill:true,tension:0.4,pointRadius:3},{label:'Active',data:makeData(12,5000,800),borderColor:'#6366f1',backgroundColor:'rgba(99,102,241,0.1)',fill:true,tension:0.4,pointRadius:3}]}, options:{responsive:true,plugins:{legend:{labels:{color:'rgba(255,255,255,0.7)',font:{size:11}}}},scales:{x:CHART_DEFAULTS,y:CHART_DEFAULTS}}});
-  const ctx4 = document.getElementById('bar-chart').getContext('2d');
-  chartBar = new Chart(ctx4, {type:'bar', data:{labels:months, datasets:[{label:'Conversion %',data:Array.from({length:12},()=>rand(28,62)/10),backgroundColor:'rgba(99,102,241,0.7)',borderRadius:6}]}, options:{responsive:true,plugins:{legend:{display:false}},scales:{x:CHART_DEFAULTS,y:{...CHART_DEFAULTS,ticks:{...CHART_DEFAULTS.ticks,callback:v=>v+'%'}}}}});
- 
-  const geos=[{country:'🇺🇸 United States',pct:38},{country:'🇬🇧 United Kingdom',pct:21},{country:'🇧🇷 Brazil',pct:18},{country:'🇩🇪 Germany',pct:11},{country:'🇫🇷 France',pct:8},{country:'🌍 Others',pct:4}];
-  document.getElementById('geo-list').innerHTML = geos.map(g=>`<div class="glass rounded-xl p-3"><div class="flex items-center justify-between mb-1.5"><span class="text-sm font-medium">${g.country}</span><span class="text-xs font-bold text-brand-400">${g.pct}%</span></div><div class="bg-white/10 h-1.5 rounded-full"><div class="bg-brand-500 h-1.5 rounded-full" style="width:${g.pct}%"></div></div></div>`).join('');
-}
-
-function initSearch() {
-  document.getElementById('main-search').addEventListener('input', debounce(e => {
-    const q = e.target.value.trim();
-    if (q.length < 2) { document.getElementById('search-results').innerHTML=''; document.getElementById('search-empty').classList.add('hidden'); return; }
-    performSearch(q);
-  }, 300));
-}
-
-function performSearch(query) {
-  const skeleton = document.getElementById('search-skeleton');
-  const results = document.getElementById('search-results');
-  const empty = document.getElementById('search-empty');
-  skeleton.classList.remove('hidden'); results.innerHTML=''; empty.classList.add('hidden');
-  setTimeout(() => {
-    skeleton.classList.add('hidden');
-    const q = query.toLowerCase();
-    const hits = [
-      ...MOCK_USERS.filter(u=>u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q)).map(u=>({type:'👤 User',title:u.name,sub:u.email,tag:u.role})),
-      ...MOCK_PRODUCTS.filter(p=>p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)).map(p=>({type:'📦 Product',title:p.name,sub:p.category,tag:p.price})),
-      ...orders.filter(o=>o.customer.toLowerCase().includes(q)||o.id.toLowerCase().includes(q)).slice(0,3).map(o=>({type:'🧾 Order',title:o.id,sub:o.customer,tag:o.status}))
-    ];
-    if (!hits.length) { empty.classList.remove('hidden'); return; }
-    results.innerHTML = hits.map(h=>`
-      <div class="glass rounded-xl p-4 flex items-center gap-4 hover:bg-white/5 transition cursor-pointer">
-        <div class="text-2xl flex-shrink-0">${h.type.split(' ')[0]}</div>
-        <div class="flex-1 min-w-0">
-          <div class="font-medium text-sm">${highlight(h.title, query)}</div>
-          <div class="text-xs text-gray-400">${h.type} — ${highlight(h.sub, query)}</div>
-        </div>
-        <span class="text-xs px-2 py-0.5 rounded-full bg-white/10 text-gray-300 flex-shrink-0">${h.tag}</span>
-      </div>`).join('');
-  }, 600);
-}
-
-function highlight(text, query) {
-  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-  return String(text).replace(re, '<mark class="bg-brand-500/30 text-brand-300 rounded px-0.5">$1</mark>');
-}
-
-function initUploadZone() {
-  const zone = document.getElementById('drop-zone');
-  const input = document.getElementById('file-input');
-  zone.addEventListener('dragover', e=>{e.preventDefault();zone.classList.add('drag-over');});
-  zone.addEventListener('dragleave', ()=>zone.classList.remove('drag-over'));
-  zone.addEventListener('drop', e=>{e.preventDefault();zone.classList.remove('drag-over');handleFiles(e.dataTransfer.files);});
-  input.addEventListener('change', e=>handleFiles(e.target.files));
-  zone.addEventListener('click', e=>{if(!e.target.matches('button'))input.click();});
-}
-
-function handleFiles(files) {
-  Array.from(files).forEach(file => {
-    const id = Date.now() + Math.random();
-    const isImg = file.type.startsWith('image/');
-    const card = document.createElement('div');
-    card.id = `file-${id}`;
-    card.className = 'glass rounded-2xl p-4 reveal';
-    card.innerHTML = `
-      <div class="aspect-video rounded-xl overflow-hidden mb-3 bg-white/5 flex items-center justify-center" id="prev-${id}">
-        <div class="text-4xl">${isImg?'🖼️':'📄'}</div>
-      </div>
-      <p class="text-sm font-medium truncate" title="${file.name}">${file.name}</p>
-      <p class="text-xs text-gray-400 mb-2">${(file.size/1024).toFixed(1)} KB</p>
-      <div class="h-1.5 bg-white/10 rounded-full overflow-hidden mb-2"><div id="prog-${id}" class="h-full bg-brand-500 rounded-full" style="width:0%;transition:width .1s"></div></div>
-      <div class="flex items-center justify-between">
-        <span id="pct-${id}" class="text-xs text-gray-400">0%</span>
-        <button onclick="removeFile('file-${id}')" class="text-xs text-red-400 hover:text-red-300 transition">Remove</button>
-      </div>`;
-    document.getElementById('file-preview').appendChild(card);
-    setTimeout(()=>card.classList.add('visible'),50);
-
-    if (isImg) { const reader=new FileReader(); reader.onload=e=>{const img=document.createElement('img');img.src=e.target.result;img.className='w-full h-full object-cover';document.getElementById(`prev-${id}`).innerHTML='';document.getElementById(`prev-${id}`).appendChild(img);}; reader.readAsDataURL(file); }
-
-    let pct=0;
-    const tick = setInterval(()=>{
-      pct += rand(5,20);
-      if (pct>=100){pct=100;clearInterval(tick);toast(`✅ ${file.name} uploaded!`,'success');saveUploadMeta(file.name);}
-      document.getElementById(`prog-${id}`).style.width=pct+'%';
-      document.getElementById(`pct-${id}`).textContent=pct+'%';
-    }, 200);
-  });
-}
-window.removeFile = function(id) { document.getElementById(id)?.remove(); };
-function saveUploadMeta(name) {
-  const arr = JSON.parse(localStorage.getItem(STORAGE_KEYS.UPLOADS)||'[]');
-  arr.push({name, date:new Date().toISOString()});
-  localStorage.setItem(STORAGE_KEYS.UPLOADS, JSON.stringify(arr));
-}
-
-window.formStep = function(dir) {
-  currentFormStep += dir;
-  [1,2,3].forEach(n=>{ document.getElementById(`fstep-${n}`).classList.toggle('hidden', n!==currentFormStep); });
-  document.querySelectorAll('.step-ind').forEach(el=>{
-    const s=parseInt(el.dataset.step);
-    const circle=el.querySelector('div');
-    el.classList.toggle('text-brand-400', s<=currentFormStep);
-    el.classList.toggle('text-gray-500', s>currentFormStep);
-    circle.classList.toggle('bg-brand-500', s<=currentFormStep);
-    circle.classList.toggle('bg-white/10', s>currentFormStep);
-    circle.classList.toggle('text-white', s<=currentFormStep);
-  });
-  document.getElementById('form-back').classList.toggle('hidden', currentFormStep===1);
-  document.getElementById('form-next').classList.toggle('hidden', currentFormStep===3);
-  document.getElementById('form-submit').classList.toggle('hidden', currentFormStep!==3);
-  saveFormData();
-};
-window.submitForm = function() {
-  toast('🎉 Form submitted successfully!', 'success');
-  addNotification('📝 Form submitted', 'Your information has been saved.');
-  localStorage.removeItem(STORAGE_KEYS.FORM);
-  currentFormStep=1; formStep(0);
-};
-function saveFormData() {
-  const data={fname:document.getElementById('f-fname')?.value,lname:document.getElementById('f-lname')?.value,phone:document.getElementById('f-phone')?.value,bio:document.getElementById('f-bio')?.value,company:document.getElementById('f-company')?.value,website:document.getElementById('f-website')?.value};
-  localStorage.setItem(STORAGE_KEYS.FORM, JSON.stringify(data));
-}
-function loadFormData() {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEYS.FORM)||'null');
-  if (!data) return;
-  if(data.fname)document.getElementById('f-fname').value=data.fname;
-  if(data.lname)document.getElementById('f-lname').value=data.lname;
-  if(data.phone)document.getElementById('f-phone').value=data.phone;
-  if(data.bio)document.getElementById('f-bio').value=data.bio;
-  if(data.company)document.getElementById('f-company').value=data.company;
-  if(data.website)document.getElementById('f-website').value=data.website;
-}
-
-window.calcInput = function(val) {
-  const disp = document.getElementById('calc-display');
-  if (val==='clear'){calcExpr='';calcNewNum=true;disp.textContent='0';return;}
-  if (val==='='){try{const r=Function('"use strict";return ('+calcExpr+')')();disp.textContent=parseFloat(r.toFixed(10));calcExpr=String(r);calcNewNum=true;}catch{disp.textContent='Error';calcExpr='';calcNewNum=true;}return;}
-  if (['+','-','*','/','%'].includes(val)){if(calcExpr==='')return;calcExpr+=val;calcNewNum=true;disp.textContent=calcExpr;return;}
-  if(calcNewNum){calcExpr+=(calcExpr?'':'')+val;calcNewNum=false;}else{calcExpr+=val;}
-  disp.textContent=calcExpr;
-};
-
-window.setPomoMode = function(mins, label) {
-  pomoAction('reset');
-  pomoSeconds=mins*60; pomoTotal=mins*60;
-  document.getElementById('pomo-time').textContent=formatTime(pomoSeconds);
-  document.getElementById('pomo-label').textContent=label;
-  document.getElementById('pomo-ring').style.strokeDashoffset='0';
-};
-window.pomoAction = function(action) {
-  if(action==='start'){
-    if(pomoRunning){clearInterval(pomoInterval);pomoRunning=false;document.getElementById('pomo-start').textContent='▶ Start';return;}
-    pomoRunning=true; document.getElementById('pomo-start').textContent='⏸ Pause';
-    pomoInterval=setInterval(()=>{
-      pomoSeconds--;
-      const progress = 1-(pomoSeconds/pomoTotal);
-      document.getElementById('pomo-ring').style.strokeDashoffset=String(282.7*progress);
-      document.getElementById('pomo-time').textContent=formatTime(pomoSeconds);
-      if(pomoSeconds<=0){clearInterval(pomoInterval);pomoRunning=false;document.getElementById('pomo-start').textContent='▶ Start';pomoSessions++;document.getElementById('pomo-sessions').textContent=pomoSessions;localStorage.setItem(STORAGE_KEYS.POMO_SESSIONS,pomoSessions);toast('🍅 Pomodoro complete! Take a break.','success');try{new Notification('🍅 Pomodoro Done!',{body:'Time for a break.'});}catch(_){}}
-    },1000);
+function renderUserNav(user) {
+  // Remove existing user nav if any
+  document.getElementById('user-nav-slot')?.remove();
+  const header = document.querySelector('header .flex.items-center.gap-3:last-child');
+  if(!header) return;
+  const slot = document.createElement('div');
+  slot.id = 'user-nav-slot';
+  slot.className = 'flex items-center gap-2';
+  if(user) {
+    slot.innerHTML = `
+      <button onclick="openPremium()" class="hidden md:flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 transition font-semibold">👑 Premium</button>
+      <button onclick="openAuthModal('profile')" class="flex items-center gap-2 px-2 py-1 rounded-xl hover:bg-white/10 transition">
+        <img src="${user.avatar}" class="w-8 h-8 rounded-full ring-2 ring-primary-500" alt="${user.name}"/>
+        <span class="hidden md:block text-sm font-medium">${user.name.split(' ')[0]}</span>
+      </button>`;
+  } else {
+    slot.innerHTML = `
+      <button onclick="openAuthModal('login')" class="px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-white/10 transition">Entrar</button>
+      <button onclick="openAuthModal('register')" class="px-4 py-1.5 text-sm font-semibold rounded-xl bg-primary-600 hover:bg-primary-700 transition">Começar grátis</button>`;
   }
-  if(action==='reset'){clearInterval(pomoInterval);pomoRunning=false;pomoSeconds=pomoTotal;document.getElementById('pomo-start').textContent='▶ Start';document.getElementById('pomo-time').textContent=formatTime(pomoSeconds);document.getElementById('pomo-ring').style.strokeDashoffset='0';}
-};
-function formatTime(s){return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
-
-window.generateQR = function() {
-  const text = document.getElementById('qr-input').value || 'https://nexusapp.vercel.app';
-  const canvas = document.getElementById('qr-canvas');
-  if(typeof QRCode!=='undefined') QRCode.toCanvas(canvas, text, {width:140,margin:1,color:{dark:'#000000',light:'#ffffff'}}, ()=>{});
-};
-window.downloadQR = function() {
-  const canvas = document.getElementById('qr-canvas');
-  const a = document.createElement('a'); a.download='qrcode.png'; a.href=canvas.toDataURL(); a.click();
-  toast('⬇ QR Code downloaded!', 'success');
-};
-
-window.toast = function(message, type='info') {
-  const colors={success:'rgba(22,163,74,0.85)',error:'rgba(220,38,38,0.85)',info:'rgba(79,70,229,0.85)',warning:'rgba(217,119,6,0.85)'};
-  const t=document.createElement('div');
-  t.className='toast'; t.style.background=colors[type]||colors.info;
-  t.innerHTML=`<span>${message}</span><button onclick="this.parentElement.remove()" class="ml-auto opacity-70 hover:opacity-100 transition text-lg leading-none">×</button>`;
-  document.getElementById('toast-container').appendChild(t);
-  setTimeout(()=>t.remove(), 4000);
-};
-
-
-function addNotification(title, body) {
-  notifList.unshift({title,body,time:new Date().toLocaleTimeString()});
-  notifCount++;
-  document.getElementById('notif-badge').classList.remove('hidden');
-  renderNotifications();
-}
-window.clearNotifs = function() { notifList=[]; notifCount=0; renderNotifications(); document.getElementById('notif-badge').classList.add('hidden'); };
-function renderNotifications() {
-  document.getElementById('notif-list').innerHTML = notifList.length ? notifList.map(n=>`<div class="px-4 py-3"><p class="text-sm font-medium">${n.title}</p><p class="text-xs text-gray-400">${n.body}</p><p class="text-xs text-gray-500 mt-0.5">${n.time}</p></div>`).join('') : '<div class="px-4 py-8 text-center text-gray-500 text-sm">No notifications</div>';
+  header.insertBefore(slot, header.firstChild);
 }
 
-function initRevealObserver() {
-  const obs = new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-  
-  const mo = new MutationObserver(()=>document.querySelectorAll('.reveal:not([data-observed])').forEach(el=>{el.dataset.observed=1;obs.observe(el);}));
-  mo.observe(document.body,{childList:true,subtree:true});
+// ── PREMIUM MODAL ──────────────────────────────────────────────────────
+window.openPremium = function() { document.getElementById('premium-modal').classList.remove('hidden'); };
+window.closePremium = function() { document.getElementById('premium-modal').classList.add('hidden'); };
+window.selectPlan = function(plan) {
+  document.querySelectorAll('#premium-modal .glass.rounded-xl').forEach(el=>el.classList.remove('border-primary-500'));
+  // highlight selected
+};
+window.activatePremium = function() {
+  const u = JSON.parse(localStorage.getItem(SK.USER)||'null');
+  if(!u) { closePremium(); openAuthModal('register'); return; }
+  u.plan='premium'; u.trialDays=14;
+  localStorage.setItem(SK.USER, JSON.stringify(u));
+  closePremium();
+  toast('🎉 Trial Premium ativado por 14 dias!', 'success');
+};
+
+// ── FILE INPUT & DROP ─────────────────────────────────────────────────
+function initFileInput() {
+  document.getElementById('file-input').addEventListener('change', e => addFiles(e.target.files));
+}
+function initDropZone() {
+  const body = document.body;
+  body.addEventListener('dragover', e => { e.preventDefault(); document.getElementById('drop-zone')?.classList.add('drag-over'); });
+  body.addEventListener('dragleave', e => { if(!e.relatedTarget) document.getElementById('drop-zone')?.classList.remove('drag-over'); });
+  body.addEventListener('drop', e => {
+    e.preventDefault();
+    document.getElementById('drop-zone')?.classList.remove('drag-over');
+    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('audio/'));
+    if(files.length) addFiles(files);
+    else toast('⚠️ Nenhum arquivo de áudio detectado', 'warning');
+  });
+  document.getElementById('drop-zone').addEventListener('click', () => document.getElementById('file-input').click());
 }
 
+function addFiles(files) {
+  const arr = Array.from(files).filter(f=>f.type.startsWith('audio/')||/\.(mp3|wav|flac|ogg|aac|m4a|opus)$/i.test(f.name));
+  if(!arr.length) { toast('Nenhum áudio encontrado', 'warning'); return; }
+  const prev = tracks.length;
+  arr.forEach(file => {
+    const url = URL.createObjectURL(file);
+    const name = file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
+    // Try to split "Artist - Title" pattern
+    const parts = name.split(' - ');
+    const title = parts.length > 1 ? parts.slice(1).join(' - ').trim() : name;
+    const artist = parts.length > 1 ? parts[0].trim() : 'Desconhecido';
+    tracks.push({ name: title, artist, duration: 0, url, size: file.size, file });
+    // Load duration async
+    const tmp = new Audio(); tmp.src = url;
+    const idx = tracks.length - 1;
+    tmp.addEventListener('loadedmetadata', () => { tracks[idx].duration = tmp.duration; renderTrackList(); });
+  });
+  renderTrackList();
+  updatePlaylistInfo();
+  toast(`✅ ${arr.length} música(s) adicionada(s)`, 'success');
+  if(prev === 0 && tracks.length > 0) loadTrack(0);
+}
+
+// ── RENDER TRACK LIST ─────────────────────────────────────────────────
+function renderTrackList(filter='') {
+  const list = document.getElementById('track-list');
+  const dz = document.getElementById('drop-zone');
+  if(!tracks.length) { dz.style.display=''; list.innerHTML=''; list.appendChild(dz); return; }
+  dz.style.display='none';
+  const q = filter.toLowerCase();
+  const filtered = tracks.map((t,i)=>({...t,i})).filter(t => !q || t.name.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q));
+  list.innerHTML = filtered.map(t => `
+    <div class="track-row rounded-xl px-3 py-2.5 flex items-center gap-3 ${t.i===currentIdx?'active':''}" onclick="loadTrack(${t.i})" role="button" tabindex="0" aria-label="${t.name}">
+      <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-primary-500/20 flex items-center justify-center text-primary-400 font-bold text-sm">${t.i===currentIdx?(isPlaying?'▶':'❚❚'):(t.i+1)}</div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-medium truncate ${t.i===currentIdx?'text-primary-300':'text-white'}">${t.name}</div>
+        <div class="text-xs text-gray-500 truncate">${t.artist}</div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <span class="text-xs text-gray-500">${fmtTime(t.duration)}</span>
+        <button onclick="removeTrack(event,${t.i})" class="text-gray-600 hover:text-red-400 transition text-sm" aria-label="Remover">✕</button>
+      </div>
+    </div>`).join('');
+  // Scroll active track into view
+  setTimeout(() => {
+    const active = list.querySelector('.active');
+    if(active) active.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }, 50);
+}
+
+window.removeTrack = function(e, idx) {
+  e.stopPropagation();
+  URL.revokeObjectURL(tracks[idx].url);
+  tracks.splice(idx, 1);
+  if(currentIdx === idx) { audio.pause(); setPlaying(false); currentIdx = Math.min(idx, tracks.length-1); if(tracks.length) loadTrack(currentIdx); else showEmpty(); }
+  else if(currentIdx > idx) currentIdx--;
+  renderTrackList(); updatePlaylistInfo();
+};
+
+window.clearPlaylist = function() {
+  tracks.forEach(t => URL.revokeObjectURL(t.url)); tracks=[];
+  currentIdx=-1; audio.pause(); setPlaying(false);
+  renderTrackList(); showEmpty(); updatePlaylistInfo();
+  toast('🗑 Playlist limpa', 'info');
+};
+
+window.sortPlaylist = function(by) {
+  tracks.sort((a,b)=> by==='name' ? a.name.localeCompare(b.name) : a.artist.localeCompare(b.artist));
+  renderTrackList(); toast('↕ Playlist ordenada', 'info');
+};
+
+function updatePlaylistInfo() {
+  const count = tracks.length;
+  const total = tracks.reduce((s,t)=>s+t.duration,0);
+  document.getElementById('track-count').textContent = `${count} música${count!==1?'s':''}`;
+  document.getElementById('playlist-info').textContent = count ? `${count} faixa${count!==1?'s':''} • ${fmtTime(total)}` : 'Playlist vazia';
+}
+
+// ── LOAD & PLAY ───────────────────────────────────────────────────────
+function loadTrack(idx) {
+  if(!tracks.length || idx < 0 || idx >= tracks.length) return;
+  currentIdx = idx;
+  const t = tracks[idx];
+  audio.src = t.url;
+  audio.load();
+  audio.play().then(()=>setPlaying(true)).catch(()=>{});
+  document.getElementById('now-title').textContent = t.name;
+  document.getElementById('now-artist').textContent = t.artist || 'Artista Desconhecido';
+  document.getElementById('empty-player').classList.add('hidden');
+  document.getElementById('now-playing').classList.remove('hidden');
+  drawCover(t.name);
+  renderTrackList(document.getElementById('search-input').value);
+  // Media Session API
+  if('mediaSession' in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: t.name, artist: t.artist, album: 'MusicFlow' });
+    navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+    navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
+    navigator.mediaSession.setActionHandler('play', ()=>audio.play());
+    navigator.mediaSession.setActionHandler('pause', ()=>audio.pause());
+  }
+  // Init Web Audio
+  initWebAudio();
+}
+
+function showEmpty() {
+  document.getElementById('empty-player').classList.remove('hidden');
+  document.getElementById('now-playing').classList.add('hidden');
+}
+
+function setPlaying(val) {
+  isPlaying = val;
+  document.getElementById('icon-play').classList.toggle('hidden', val);
+  document.getElementById('icon-pause').classList.toggle('hidden', !val);
+  const art = document.getElementById('art-canvas');
+  art.classList.toggle('paused', !val);
+  const eq = document.getElementById('eq-indicator');
+  eq.style.opacity = val ? '1' : '0';
+  eq.classList.toggle('playing', val);
+  // Stats
+  if(val) statsInterval = statsInterval || setInterval(()=>{ totalListenSecs++; saveStats(); }, 1000);
+  else { clearInterval(statsInterval); statsInterval=null; }
+}
+
+// ── CONTROLS ──────────────────────────────────────────────────────────
+window.togglePlay = function() {
+  if(!tracks.length) return;
+  if(isPlaying) audio.pause(); else audio.play();
+};
+window.nextTrack = function() {
+  if(!tracks.length) return;
+  if(isShuffle) { let n; do { n=Math.floor(Math.random()*tracks.length); } while(n===currentIdx&&tracks.length>1); loadTrack(n); }
+  else { loadTrack((currentIdx+1)%tracks.length); }
+};
+window.prevTrack = function() {
+  if(!tracks.length) return;
+  if(audio.currentTime > 3) { audio.currentTime=0; return; }
+  loadTrack((currentIdx-1+tracks.length)%tracks.length);
+};
+window.toggleShuffle = function() {
+  isShuffle = !isShuffle;
+  document.getElementById('btn-shuffle').classList.toggle('text-primary-400', isShuffle);
+  document.getElementById('btn-shuffle').classList.toggle('text-gray-400', !isShuffle);
+  toast(isShuffle ? '🔀 Aleatório ativado' : '🔀 Aleatório desativado', 'info');
+};
+window.cycleRepeat = function() {
+  repeatMode = (repeatMode+1)%3;
+  const btn = document.getElementById('btn-repeat');
+  const badge = document.getElementById('repeat-badge');
+  btn.classList.toggle('text-primary-400', repeatMode>0);
+  btn.classList.toggle('text-gray-400', repeatMode===0);
+  badge.classList.toggle('hidden', repeatMode!==2);
+  const msgs=['🔁 Repetição desativada','🔁 Repetir tudo','🔂 Repetir esta'];
+  toast(msgs[repeatMode], 'info');
+};
+window.toggleMute = function() {
+  isMuted = !isMuted;
+  audio.muted = isMuted;
+  document.getElementById('vol-icon').textContent = isMuted ? '🔇' : (audio.volume>0.5?'🔊':'🔉');
+};
+
+// ── AUDIO EVENTS ──────────────────────────────────────────────────────
+function initAudioEvents() {
+  audio.addEventListener('play', ()=>setPlaying(true));
+  audio.addEventListener('pause', ()=>setPlaying(false));
+  audio.addEventListener('ended', ()=>{
+    if(repeatMode===2) { audio.currentTime=0; audio.play(); return; }
+    nextTrack();
+  });
+  audio.addEventListener('timeupdate', ()=>{
+    if(!audio.duration) return;
+    const pct = (audio.currentTime/audio.duration)*100;
+    progressEl.value = pct;
+    progressEl.style.background = `linear-gradient(to right, #8b5cf6 ${pct}%, rgba(255,255,255,.15) ${pct}%)`;
+    document.getElementById('time-current').textContent = fmtTime(audio.currentTime);
+    document.getElementById('time-total').textContent = fmtTime(audio.duration);
+  });
+  audio.addEventListener('loadedmetadata', ()=>{
+    document.getElementById('time-total').textContent = fmtTime(audio.duration);
+    if(tracks[currentIdx]) tracks[currentIdx].duration = audio.duration;
+    updatePlaylistInfo();
+  });
+  audio.addEventListener('error', ()=>toast('❌ Erro ao reproduzir arquivo','error'));
+}
+function initProgressBar() {
+  progressEl.addEventListener('input', ()=>{ if(audio.duration) audio.currentTime = (progressEl.value/100)*audio.duration; });
+}
+function initVolumeBar() {
+  volEl.addEventListener('input', ()=>{
+    const v = parseInt(volEl.value);
+    audio.volume = v/100; audio.muted = false; isMuted=false;
+    document.getElementById('vol-pct').textContent = v+'%';
+    document.getElementById('vol-icon').textContent = v===0?'🔇':v<50?'🔉':'🔊';
+    savePrefs({vol:v});
+  });
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input', e => renderTrackList(e.target.value));
+
+// ── WEB AUDIO + VISUALIZER ────────────────────────────────────────────
+function initWebAudio() {
+  if(sourceNode) { try{sourceNode.disconnect();}catch(_){} }
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  analyserNode = audioCtx.createAnalyser();
+  analyserNode.fftSize = 256;
+  sourceNode = audioCtx.createMediaElementSource(audio);
+  sourceNode.connect(analyserNode);
+  analyserNode.connect(audioCtx.destination);
+  drawVisualizer();
+}
+
+function drawVisualizer() {
+  const canvas = document.getElementById('visualizer');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  const bufLen = analyserNode ? analyserNode.frequencyBinCount : 128;
+  const dataArr = new Uint8Array(bufLen);
+  function draw() {
+    animFrame = requestAnimationFrame(draw);
+    ctx.clearRect(0,0,W,H);
+    if(analyserNode && isPlaying) {
+      analyserNode.getByteFrequencyData(dataArr);
+    } else {
+      dataArr.fill(0);
+    }
+    const barW = (W / bufLen) * 2.2;
+    let x = 0;
+    for(let i=0; i<bufLen; i++){
+      const v = dataArr[i]/255;
+      const h = v * H;
+      const grad = ctx.createLinearGradient(0,H-h,0,H);
+      grad.addColorStop(0,'rgba(236,72,153,0.9)');
+      grad.addColorStop(1,'rgba(139,92,246,0.7)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, H-h, barW-1, h);
+      x += barW;
+    }
+  }
+  if(animFrame) cancelAnimationFrame(animFrame);
+  draw();
+}
+
+// ── ALBUM ART (canvas drawn) ──────────────────────────────────────────
+function drawCover(name) {
+  const canvas = document.getElementById('art-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  // Create a color from title hash
+  let hash = 0; for(const c of name) hash = ((hash<<5)-hash)+c.charCodeAt(0);
+  const h1 = Math.abs(hash % 360);
+  const h2 = (h1 + 120) % 360;
+  const grad = ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0, `hsl(${h1},70%,35%)`);
+  grad.addColorStop(1, `hsl(${h2},80%,25%)`);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+  // Musical note overlay
+  ctx.font = `${W*0.35}px serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.globalAlpha = 0.25;
+  ctx.fillStyle = '#fff';
+  ctx.fillText('♪', W/2+10, H/2+10);
+  ctx.globalAlpha = 1;
+  // Initials
+  ctx.font = `bold ${W*0.18}px Inter, sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText(name.slice(0,2).toUpperCase(), W/2, H/2);
+}
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────
 function initKeyboard() {
   document.addEventListener('keydown', e => {
     const tag = document.activeElement.tagName;
-    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return;
-    if(e.key==='Escape'){closeModal();document.getElementById('notif-panel').classList.add('hidden');document.getElementById('user-dropdown').classList.add('hidden');return;}
-    if(e.key==='k'||e.key==='K'){e.preventDefault();openSection('search');setTimeout(()=>document.getElementById('main-search').focus(),100);return;}
-    if(e.key==='g'||e.key==='G'){gKeyTimer=setTimeout(()=>gKeyTimer=null,1000);return;}
-    if(gKeyTimer){
-      clearTimeout(gKeyTimer); gKeyTimer=null;
-      if(e.key==='d'||e.key==='D') openSection('dashboard');
-      if(e.key==='t'||e.key==='T') openSection('tools');
-      if(e.key==='s'||e.key==='S') openSection('search');
-      if(e.key==='u'||e.key==='U') openSection('uploads');
+    if(tag==='INPUT'||tag==='TEXTAREA') return;
+    switch(e.key) {
+      case ' ': e.preventDefault(); togglePlay(); break;
+      case 'ArrowRight': nextTrack(); break;
+      case 'ArrowLeft': prevTrack(); break;
+      case 'ArrowUp': e.preventDefault(); volEl.value=Math.min(100,+volEl.value+5); volEl.dispatchEvent(new Event('input')); break;
+      case 'ArrowDown': e.preventDefault(); volEl.value=Math.max(0,+volEl.value-5); volEl.dispatchEvent(new Event('input')); break;
+      case 'm': case 'M': toggleMute(); break;
+      case 's': case 'S': toggleShuffle(); break;
+      case 'r': case 'R': cycleRepeat(); break;
+      case 'l': case 'L': if(audio.duration) audio.currentTime=Math.min(audio.duration, audio.currentTime+10); break;
+      case 'j': case 'J': if(audio.duration) audio.currentTime=Math.max(0, audio.currentTime-10); break;
+      case 'Escape': closeAuthModal(); closePremium(); closeShortcuts(); break;
     }
   });
 }
 
-function initConnectivity() {
-  function update() {
-    const banner=document.getElementById('conn-banner');
-    if(!navigator.onLine){banner.classList.remove('hidden');toast('📵 You are offline','warning');}
-    else{banner.classList.add('hidden');if(offlineQueue.length){toast(`🔄 Back online — syncing ${offlineQueue.length} action(s)…`,'info');offlineQueue=[];}}
-  }
-  window.addEventListener('online', update);
-  window.addEventListener('offline', update);
+// ── SHORTCUTS MODAL ───────────────────────────────────────────────────
+window.showShortcuts = function() { document.getElementById('shortcuts-modal').classList.remove('hidden'); };
+window.closeShortcuts = function() { document.getElementById('shortcuts-modal').classList.add('hidden'); };
+
+// ── STATS ─────────────────────────────────────────────────────────────
+function saveStats() {
+  const s = JSON.parse(localStorage.getItem(SK.STATS)||'{}');
+  s.secs = (s.secs||0) + 1;
+  localStorage.setItem(SK.STATS, JSON.stringify(s));
 }
 
-window.exportData = function() {
-  const payload={exportedAt:new Date().toISOString(),user:JSON.parse(localStorage.getItem(STORAGE_KEYS.USER)||'null'),orders:orders.slice(0,10),form:JSON.parse(localStorage.getItem(STORAGE_KEYS.FORM)||'null'),uploads:JSON.parse(localStorage.getItem(STORAGE_KEYS.UPLOADS)||'[]')};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='nexusapp-data.json'; a.click();
-  toast('📦 Data exported successfully!','success');
-};
-window.clearAllData = function() {
-  if(confirm('Clear all local data? This cannot be undone.')) { Object.values(STORAGE_KEYS).forEach(k=>localStorage.removeItem(k)); toast('🗑 All data cleared','warning'); setTimeout(()=>location.reload(),1500); }
+// ── EXPORT PLAYLIST INFO ──────────────────────────────────────────────
+window.exportPlaylist = function() {
+  const data = { exportedAt: new Date().toISOString(), tracks: tracks.map(t=>({name:t.name,artist:t.artist,duration:fmtTime(t.duration),size:t.size})) };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='musicflow-playlist.json'; a.click();
+  toast('📥 Playlist exportada!', 'success');
 };
 
-function debounce(fn, ms) { let t; return function(...args){clearTimeout(t);t=setTimeout(()=>fn.apply(this,args),ms); }; }
+// ── TOAST ─────────────────────────────────────────────────────────────
+window.toast = function(msg, type='info') {
+  const colors={success:'rgba(22,163,74,.88)',error:'rgba(220,38,38,.88)',info:'rgba(124,58,237,.88)',warning:'rgba(217,119,6,.88)'};
+  const t = document.createElement('div');
+  t.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-xl animate-slide-up';
+  t.style.cssText = `background:${colors[type]||colors.info};min-width:220px;backdrop-filter:blur(12px)`;
+  t.innerHTML = `<span class="flex-1">${msg}</span><button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100 text-lg leading-none">×</button>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(()=>t?.remove(), 3500);
+};
 
+// ── UTILS ─────────────────────────────────────────────────────────────
+function fmtTime(s) {
+  if(!s||isNaN(s)) return '0:00';
+  const m=Math.floor(s/60), sec=Math.floor(s%60);
+  return `${m}:${String(sec).padStart(2,'0')}`;
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
 })();
 </script>
