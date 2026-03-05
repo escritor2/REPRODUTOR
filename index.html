@@ -2,1126 +2,468 @@
 <html lang="pt-BR" class="dark">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <meta name="description" content="Reprodutor de músicas offline — toque seus arquivos locais direto no navegador." />
-  <meta name="theme-color" content="#7c3aed" />
-  <title>🎵 MusicFlow — Reprodutor Offline</title>
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: { primary: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' } },
-          animation: {
-            'spin-slow': 'spin 8s linear infinite',
-            'fade-in': 'fadeIn .3s ease',
-            'slide-up': 'slideUp .35s ease',
-            'eq1': 'eq1 .8s ease-in-out infinite alternate',
-            'eq2': 'eq1 1s ease-in-out infinite alternate',
-            'eq3': 'eq1 .6s ease-in-out infinite alternate',
-          },
-          keyframes: {
-            fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
-            slideUp: { '0%': { transform: 'translateY(16px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
-            eq1: { '0%': { transform: 'scaleY(.3)' }, '100%': { transform: 'scaleY(1)' } },
-          }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta name="description"
+        content="Reprodutor de músicas offline — toque seus arquivos locais direto no navegador." />
+
+    <!-- Open Graph / SEO -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MusicFlow - Offline Player">
+    <meta property="og:description" content="Toque suas músicas locais de forma rápida, off-line e com Equalizador.">
+    <meta property="og:url" content="https://musicflow-offline.netlify.app/">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&q=80">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="theme-color" content="#8b5cf6" />
+    <title>MusicFlow - Offline Player</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="https://api.iconify.design/noto:musical-note.svg" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { primary: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' } },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'fade-in': 'fadeIn .3s ease',
+                        'slide-up': 'slideUp .35s ease',
+                        'eq1': 'eq1 .8s ease-in-out infinite alternate',
+                        'eq2': 'eq1 1s ease-in-out infinite alternate',
+                        'eq3': 'eq1 .6s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                        slideUp: { '0%': { transform: 'translateY(16px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } },
+                        eq1: { '0%': { transform: 'scaleY(.3)' }, '100%': { transform: 'scaleY(1)' } },
+                    }
+                }
+            }
         }
-      }
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      font-family: 'Inter', sans-serif;
-      box-sizing: border-box
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
-
-    ::-webkit-scrollbar {
-      width: 5px
-    }
-
-    ::-webkit-scrollbar-track {
-      background: transparent
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #7c3aed;
-      border-radius: 9px
-    }
-
-    *:focus-visible {
-      outline: 2px solid #8b5cf6;
-      outline-offset: 2px
-    }
-
-    /* Glass effect */
-    .glass {
-      background: rgba(255, 255, 255, .04);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, .08)
-    }
-
-    .glass-dark {
-      background: rgba(0, 0, 0, .3);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, .06)
-    }
-
-    /* Gradient text */
-    .grad {
-      background: linear-gradient(135deg, #a78bfa, #ec4899);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent
-    }
-
-    /* Album art spinning */
-    .spinning {
-      animation: spin 12s linear infinite
-    }
-
-    .paused {
-      animation-play-state: paused
-    }
-
-    /* Progress bar */
-    .progress-bar {
-      -webkit-appearance: none;
-      appearance: none;
-      height: 4px;
-      border-radius: 9px;
-      background: rgba(255, 255, 255, .15);
-      outline: none;
-      cursor: pointer;
-      transition: height .2s
-    }
-
-    .progress-bar:hover {
-      height: 7px
-    }
-
-    .progress-bar::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      background: #8b5cf6;
-      border-radius: 50%;
-      cursor: pointer;
-      border: 2px solid #fff;
-      box-shadow: 0 0 8px #8b5cf6
-    }
-
-    .progress-bar::-webkit-slider-runnable-track {
-      border-radius: 9px
-    }
-
-    /* Volume */
-    .vol-bar {
-      -webkit-appearance: none;
-      appearance: none;
-      height: 4px;
-      border-radius: 9px;
-      background: rgba(255, 255, 255, .15);
-      cursor: pointer
-    }
-
-    .vol-bar::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
-      background: #8b5cf6;
-      border-radius: 50%;
-      cursor: pointer
-    }
-
-    /* Equalizer bars */
-    .eq-bar {
-      display: inline-block;
-      width: 3px;
-      background: linear-gradient(180deg, #ec4899, #8b5cf6);
-      border-radius: 2px;
-      transform-origin: bottom;
-      margin: 0 1px
-    }
-
-    .playing .eq-bar:nth-child(1) {
-      animation: eq1 .8s ease-in-out infinite alternate
-    }
-
-    .playing .eq-bar:nth-child(2) {
-      animation: eq1 .5s ease-in-out infinite alternate
-    }
-
-    .playing .eq-bar:nth-child(3) {
-      animation: eq1 1s ease-in-out infinite alternate
-    }
-
-    .playing .eq-bar:nth-child(4) {
-      animation: eq1 .7s ease-in-out infinite alternate
-    }
-
-    .playing .eq-bar:nth-child(5) {
-      animation: eq1 .9s ease-in-out infinite alternate
-    }
-
-    /* Track row hover */
-    .track-row {
-      transition: background .2s;
-      cursor: pointer
-    }
-
-    .track-row:hover {
-      background: rgba(139, 92, 246, .12)
-    }
-
-    .track-row.active {
-      background: rgba(139, 92, 246, .2);
-      border-left: 3px solid #8b5cf6
-    }
-
-    /* Canvas visualizer */
-    #visualizer {
-      border-radius: 16px;
-      opacity: .85
-    }
-
-    /* Drop zone states */
-    .drag-over {
-      border-color: #8b5cf6 !important;
-      background: rgba(139, 92, 246, .1) !important
-    }
-
-    /* Neon glow */
-    .neon-glow {
-      box-shadow: 0 0 30px rgba(139, 92, 246, .4), 0 0 60px rgba(139, 92, 246, .15)
-    }
-
-    /* Ripple btn */
-    .btn-icon {
-      position: relative;
-      overflow: hidden;
-      transition: transform .15s, opacity .15s
-    }
-
-    .btn-icon:hover {
-      transform: scale(1.1)
-    }
-
-    .btn-icon:active {
-      transform: scale(.95)
-    }
-
-    /* Animated bg */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, .15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, .1) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0
-    }
-  </style>
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body class="bg-gray-950 text-gray-100 min-h-screen relative overflow-x-hidden">
 
-  <!-- ===== TOAST ===== -->
-  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- ===== HEADER ===== -->
-  <header class="relative z-10 px-4 md:px-8 py-4 flex items-center justify-between glass border-b border-white/5">
-    <div class="flex items-center gap-3">
-      <div class="text-2xl">🎵</div>
-      <h1 class="font-bold text-lg"><span class="grad">MusicFlow</span></h1>
-      <span class="text-xs text-gray-500 hidden md:block">reprodutor offline</span>
-    </div>
-    <div class="flex items-center gap-3">
-      <!-- Equalizer indicator -->
-      <div id="eq-indicator" class="flex items-end h-5 gap-px opacity-0 transition-opacity">
-        <span class="eq-bar h-3"></span>
-        <span class="eq-bar h-5"></span>
-        <span class="eq-bar h-2"></span>
-        <span class="eq-bar h-4"></span>
-        <span class="eq-bar h-3"></span>
-      </div>
-      <span id="track-count" class="text-xs text-gray-500">0 músicas</span>
-      <!-- Theme toggle -->
-      <button onclick="toggleTheme()" id="theme-btn" aria-label="Alternar tema"
-        class="btn-icon p-2 rounded-lg hover:bg-white/10 transition text-lg">🌙</button>
-      <!-- Add files -->
-      <button onclick="document.getElementById('file-input').click()"
-        class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-sm font-semibold px-4 py-2 rounded-xl transition btn-icon">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-        </svg>
-        Adicionar
-      </button>
-      <input id="file-input" type="file" accept="audio/*" multiple class="hidden" />
-    </div>
-  </header>
-
-  <!-- ===== MAIN LAYOUT ===== -->
-  <div class="relative z-10 flex flex-col lg:flex-row h-[calc(100vh-65px)]">
-
-    <!-- ===== PLAYLIST (LEFT) ===== -->
-    <aside class="w-full lg:w-80 xl:w-96 flex flex-col glass border-r border-white/5 overflow-hidden"
-      style="min-height:0">
-      <!-- Search & controls -->
-      <div class="p-4 border-b border-white/5 space-y-3 flex-shrink-0">
-        <div class="relative">
-          <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
-          </svg>
-          <input id="search-input" type="text" placeholder="Buscar música…" aria-label="Buscar"
-            class="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm outline-none focus:border-primary-500 transition placeholder-gray-500" />
-        </div>
-        <div class="flex items-center justify-between text-xs text-gray-400">
-          <span id="playlist-info">Playlist vazia</span>
-          <div class="flex gap-2">
-            <button onclick="sortPlaylist('name')" title="Ordenar por nome"
-              class="hover:text-white transition px-2 py-1 rounded-lg hover:bg-white/10">A-Z</button>
-            <button onclick="clearPlaylist()" title="Limpar playlist"
-              class="hover:text-red-400 transition px-2 py-1 rounded-lg hover:bg-red-500/10">Limpar</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Track list -->
-      <div id="track-list" class="flex-1 overflow-y-auto p-2">
-        <!-- Drop zone (shown when empty) -->
-        <div id="drop-zone"
-          class="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-white/15 rounded-2xl m-2 transition hover:border-primary-500 hover:bg-primary-500/5 cursor-pointer">
-          <div class="text-6xl mb-4">🎶</div>
-          <p class="font-semibold text-gray-300 mb-2">Arraste músicas aqui</p>
-          <p class="text-sm text-gray-500 mb-4">ou clique em <strong class="text-primary-400">Adicionar</strong></p>
-          <p class="text-xs text-gray-600">MP3, WAV, FLAC, OGG, AAC, M4A</p>
-        </div>
-      </div>
-    </aside>
-
-    <!-- ===== PLAYER (RIGHT) ===== -->
-    <main class="flex-1 flex flex-col items-center justify-center p-6 md:p-10 overflow-y-auto" style="min-height:0">
-
-      <!-- Empty state -->
-      <div id="empty-player" class="text-center">
-        <div class="text-8xl mb-6 animate-bounce">🎵</div>
-        <h2 class="text-2xl font-bold mb-2">Nenhuma música carregada</h2>
-        <p class="text-gray-400 mb-6">Adicione arquivos de áudio para começar</p>
-        <button onclick="document.getElementById('file-input').click()"
-          class="bg-primary-600 hover:bg-primary-700 px-6 py-3 rounded-2xl font-semibold transition btn-icon">
-          🎵 Carregar músicas
-        </button>
-      </div>
-
-      <!-- Now Playing -->
-      <div id="now-playing" class="hidden w-full max-w-lg space-y-8 animate-fade-in">
-
-        <!-- Album Art -->
-        <div class="flex justify-center">
-          <div class="relative">
-            <div class="w-52 h-52 md:w-64 md:h-64 rounded-full neon-glow" id="art-ring">
-              <canvas id="art-canvas" width="256" height="256" class="w-full h-full rounded-full spinning paused"
-                style="border:4px solid rgba(139,92,246,.5)"></canvas>
+    <header class="relative z-10 px-4 md:px-8 py-4 flex items-center justify-between glass border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div class="text-2xl">🎵</div>
+            <h1 class="font-bold text-lg"><span class="grad">MusicFlow</span></h1>
+            <span class="text-xs text-gray-500 hidden md:block">reprodutor offline</span>
+            <div class="ml-4 flex bg-white/5 rounded-lg p-1">
+                <button
+                    onclick="document.getElementById('audio-view').classList.remove('hidden'); document.getElementById('video-view').classList.add('hidden')"
+                    class="px-3 py-1 text-xs font-semibold rounded-md bg-primary-600">Áudio</button>
+                <button
+                    onclick="document.getElementById('audio-view').classList.add('hidden'); document.getElementById('video-view').classList.remove('hidden')"
+                    class="px-3 py-1 text-xs font-semibold rounded-md hover:bg-white/10">Vídeo</button>
             </div>
-            <!-- Center dot -->
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div
-                class="w-10 h-10 bg-gray-950 rounded-full border-2 border-primary-500 z-10 flex items-center justify-center text-lg"
-                id="center-icon">♪</div>
+        </div>
+        <div class="flex items-center gap-3">
+
+            <div id="eq-indicator" class="flex items-end h-5 gap-px opacity-0 transition-opacity">
+                <span class="eq-bar h-3"></span>
+                <span class="eq-bar h-5"></span>
+                <span class="eq-bar h-2"></span>
+                <span class="eq-bar h-4"></span>
+                <span class="eq-bar h-3"></span>
             </div>
-          </div>
-        </div>
+            <span id="track-count" class="text-xs text-gray-500">0 músicas</span>
 
-        <!-- Title & Artist -->
-        <div class="text-center">
-          <h2 id="now-title" class="text-2xl font-bold truncate mb-1"></h2>
-          <p id="now-artist" class="text-gray-400 text-sm"></p>
-        </div>
+            <button onclick="toggleTheme()" id="theme-btn" aria-label="Alternar tema"
+                class="btn-icon p-2 rounded-lg hover:bg-white/10 transition text-lg">🌙</button>
 
-        <!-- Audio Visualizer -->
-        <div class="relative w-full h-16 flex items-center justify-center overflow-hidden">
-          <canvas id="visualizer" class="w-full h-full"></canvas>
-        </div>
-
-        <!-- Progress bar -->
-        <div class="space-y-1">
-          <input id="progress" type="range" min="0" max="100" value="0" class="progress-bar w-full"
-            aria-label="Progresso da música" />
-          <div class="flex justify-between text-xs text-gray-500">
-            <span id="time-current">0:00</span>
-            <span id="time-total">0:00</span>
-          </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="flex items-center justify-center gap-4 md:gap-6">
-          <!-- Shuffle -->
-          <button id="btn-shuffle" onclick="toggleShuffle()" aria-label="Aleatório" title="Aleatório"
-            class="btn-icon p-2 rounded-xl text-gray-400 hover:text-white transition">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 4l4 4m12-4h-4a8 8 0 00-7 4M4 20h4a8 8 0 007-4m0 0l4 4m-4-4l4-4" />
-            </svg>
-          </button>
-          <!-- Previous -->
-          <button onclick="prevTrack()" aria-label="Anterior" title="Anterior"
-            class="btn-icon p-3 rounded-xl text-gray-300 hover:text-white transition">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
-            </svg>
-          </button>
-          <!-- Play/Pause -->
-          <button id="btn-play" onclick="togglePlay()" aria-label="Play/Pause"
-            class="btn-icon w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-500 flex items-center justify-center shadow-lg neon-glow transition">
-            <svg id="icon-play" class="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-            <svg id="icon-pause" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-            </svg>
-          </button>
-          <!-- Next -->
-          <button onclick="nextTrack()" aria-label="Próxima" title="Próxima"
-            class="btn-icon p-3 rounded-xl text-gray-300 hover:text-white transition">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
-            </svg>
-          </button>
-          <!-- Repeat -->
-          <button id="btn-repeat" onclick="cycleRepeat()" aria-label="Repetir" title="Repetir"
-            class="btn-icon p-2 rounded-xl text-gray-400 hover:text-white transition relative">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 4v5h5m11 4a9 9 0 01-9 9 9.005 9.005 0 01-8.716-6.747M20 9v5h-5" />
-            </svg>
-            <span id="repeat-badge"
-              class="hidden absolute -top-1 -right-1 w-4 h-4 bg-primary-500 rounded-full text-[9px] flex items-center justify-center font-bold">1</span>
-          </button>
-        </div>
-
-        <!-- Volume & Extra -->
-        <div class="flex items-center gap-4">
-          <button onclick="toggleMute()" id="vol-icon"
-            class="btn-icon text-gray-400 hover:text-white transition text-lg flex-shrink-0">🔊</button>
-          <input id="volume" type="range" min="0" max="100" value="80" class="vol-bar flex-1" aria-label="Volume" />
-          <span id="vol-pct" class="text-xs text-gray-500 w-8 text-right">80%</span>
-          <div class="flex gap-2 ml-2">
-            <!-- Keyboard shortcuts hint -->
-            <button onclick="showShortcuts()" title="Atalhos"
-              class="btn-icon p-2 rounded-xl text-gray-500 hover:text-white transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 3v1m0 16v1m8.66-13l-.87.5M4.21 18.5l-.87.5M20.66 18.5l-.87-.5M4.21 5.5l-.87-.5M21 12h-1M4 12H3" />
-              </svg>
+            <button onclick="document.getElementById('file-input').click()"
+                class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-sm font-semibold px-4 py-2 rounded-xl transition btn-icon">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                </svg>
+                Adicionar
             </button>
-            <!-- Download current as playlist JSON -->
-            <button onclick="exportPlaylist()" title="Exportar info da playlist"
-              class="btn-icon p-2 rounded-xl text-gray-500 hover:text-white transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
+            <input id="file-input" type="file" accept="audio/*" multiple class="hidden" />
+        </div>
+    </header>
+
+
+    <div class="relative z-10 flex flex-col lg:flex-row h-[calc(100vh-65px)]">
+
+
+        <aside class="w-full lg:w-80 xl:w-96 flex flex-col glass border-r border-white/5 overflow-hidden"
+            style="min-height:0">
+
+            <div class="p-4 border-b border-white/5 space-y-3 flex-shrink-0">
+                <div class="relative">
+                    <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
+                    </svg>
+                    <input id="search-input" type="text" placeholder="Buscar música…" aria-label="Buscar"
+                        class="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm outline-none focus:border-primary-500 transition placeholder-gray-500" />
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400">
+                    <span id="playlist-info">Playlist vazia</span>
+                    <div class="flex gap-2">
+                        <button onclick="sortPlaylist('name')" title="Ordenar por nome"
+                            class="hover:text-white transition px-2 py-1 rounded-lg hover:bg-white/10">A-Z</button>
+                        <button onclick="clearPlaylist()" title="Limpar playlist"
+                            class="hover:text-red-400 transition px-2 py-1 rounded-lg hover:bg-red-500/10">Limpar</button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="track-list" class="flex-1 overflow-y-auto p-2">
+
+                <div id="drop-zone"
+                    class="h-full flex flex-col items-center justify-center p-8 text-center border-2 border-dashed border-white/15 rounded-2xl m-2 transition hover:border-primary-500 hover:bg-primary-500/5 cursor-pointer">
+                    <div class="text-6xl mb-4">🎶</div>
+                    <p class="font-semibold text-gray-300 mb-2">Arraste músicas aqui</p>
+                    <p class="text-sm text-gray-500 mb-4">ou clique em <strong
+                            class="text-primary-400">Adicionar</strong></p>
+                    <p class="text-xs text-gray-600">MP3, WAV, FLAC, OGG, AAC, M4A</p>
+                </div>
+            </div>
+        </aside>
+
+
+        <main id="audio-view" class="flex-1 flex flex-col items-center justify-center p-6 md:p-10 overflow-y-auto"
+            style="min-height:0">
+
+
+            <div id="empty-player" class="text-center">
+                <div class="text-8xl mb-6 animate-bounce">🎵</div>
+                <h2 class="text-2xl font-bold mb-2">Nenhuma música carregada</h2>
+                <p class="text-gray-400 mb-6">Adicione arquivos de áudio para começar</p>
+                <button onclick="document.getElementById('file-input').click()"
+                    class="bg-primary-600 hover:bg-primary-700 px-6 py-3 rounded-2xl font-semibold transition btn-icon">
+                    🎵 Carregar músicas
+                </button>
+            </div>
+
+            <div id="now-playing" class="hidden w-full max-w-lg space-y-8 animate-fade-in">
+
+                <div class="flex justify-center">
+                    <div class="relative">
+                        <div class="w-52 h-52 md:w-64 md:h-64 rounded-full neon-glow" id="art-ring">
+                            <canvas id="art-canvas" width="256" height="256"
+                                class="w-full h-full rounded-full spinning paused"
+                                style="border:4px solid rgba(139,92,246,.5)"></canvas>
+                        </div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-10 h-10 bg-gray-950 rounded-full border-2 border-primary-500 z-10 flex items-center justify-center text-lg"
+                                id="center-icon">♪</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="text-center">
+                    <h2 id="now-title" class="text-2xl font-bold truncate mb-1"></h2>
+                    <p id="now-artist" class="text-gray-400 text-sm"></p>
+                </div>
+
+
+                <div class="relative w-full h-16 flex items-center justify-center overflow-hidden">
+                    <canvas id="visualizer" class="w-full h-full"></canvas>
+                </div>
+
+
+                <div class="space-y-1">
+                    <input id="progress" type="range" min="0" max="100" value="0" class="progress-bar w-full"
+                        aria-label="Progresso da música" />
+                    <div class="flex justify-between text-xs text-gray-500">
+                        <span id="time-current">0:00</span>
+                        <span id="time-total">0:00</span>
+                    </div>
+                </div>
+
+
+                <div class="flex items-center justify-center gap-4 md:gap-6">
+
+                    <button id="btn-shuffle" onclick="toggleShuffle()" aria-label="Aleatório" title="Aleatório"
+                        class="btn-icon p-2 rounded-xl text-gray-400 hover:text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4l4 4m12-4h-4a8 8 0 00-7 4M4 20h4a8 8 0 007-4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                    </button>
+
+                    <button onclick="prevTrack()" aria-label="Anterior" title="Anterior"
+                        class="btn-icon p-3 rounded-xl text-gray-300 hover:text-white transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+                        </svg>
+                    </button>
+
+                    <button id="btn-play" onclick="togglePlay()" aria-label="Play/Pause"
+                        class="btn-icon w-16 h-16 rounded-full bg-primary-600 hover:bg-primary-500 flex items-center justify-center shadow-lg neon-glow transition">
+                        <svg id="icon-play" class="w-7 h-7 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <svg id="icon-pause" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
+                    </button>
+
+                    <button onclick="nextTrack()" aria-label="Próxima" title="Próxima"
+                        class="btn-icon p-3 rounded-xl text-gray-300 hover:text-white transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                        </svg>
+                    </button>
+
+                    <button id="btn-repeat" onclick="cycleRepeat()" aria-label="Repetir" title="Repetir"
+                        class="btn-icon p-2 rounded-xl text-gray-400 hover:text-white transition relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h5m11 4a9 9 0 01-9 9 9.005 9.005 0 01-8.716-6.747M20 9v5h-5" />
+                        </svg>
+                        <span id="repeat-badge"
+                            class="hidden absolute -top-1 -right-1 w-4 h-4 bg-primary-500 rounded-full text-[9px] flex items-center justify-center font-bold">1</span>
+                    </button>
+                </div>
+
+
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleMute()" id="vol-icon"
+                        class="btn-icon text-gray-400 hover:text-white transition text-lg flex-shrink-0">🔊</button>
+                    <input id="volume" type="range" min="0" max="100" value="80" class="vol-bar flex-1"
+                        aria-label="Volume" />
+                    <span id="vol-pct" class="text-xs text-gray-500 w-8 text-right">80%</span>
+                    <div class="flex gap-2 ml-2">
+
+                        <button onclick="showShortcuts()" title="Atalhos"
+                            class="btn-icon p-2 rounded-xl text-gray-500 hover:text-white transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m8.66-13l-.87.5M4.21 18.5l-.87.5M20.66 18.5l-.87-.5M4.21 5.5l-.87-.5M21 12h-1M4 12H3" />
+                            </svg>
+                        </button>
+
+                        <button onclick="exportPlaylist()" title="Exportar info da playlist"
+                            class="btn-icon p-2 rounded-xl text-gray-500 hover:text-white transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <main id="video-view"
+            class="hidden flex-1 flex flex-col items-center justify-center p-6 md:p-10 overflow-y-auto grad"
+            style="min-height:0">
+            <div class="text-center">
+                <div class="text-6xl mb-4">🎬</div>
+                <h2 class="text-2xl font-bold mb-2 text-white">Reprodutor de Vídeo</h2>
+                <p class="text-gray-400">Em breve: suporte a MP4 e reprodução de vídeos offline.</p>
+            </div>
+        </main>
+    </div>
+
+    <div id="shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeShortcuts()"></div>
+        <div class="relative glass rounded-2xl w-full max-w-sm p-6 animate-fade-in border border-white/10">
+            <button onclick="closeShortcuts()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-lg">✕</button>
+            <h3 class="font-bold text-lg mb-4">⌨️ Atalhos de teclado</h3>
+            <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-gray-400">Play / Pause</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">Espaço</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Próxima</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">→</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Anterior</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">←</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Volume +</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">↑</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Volume -</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">↓</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Mudo</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">M</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Aleatório</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">S</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">Repetir</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">R</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">+10 segundos</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">L</kbd></div>
+                <div class="flex justify-between"><span class="text-gray-400">-10 segundos</span><kbd
+                        class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">J</kbd></div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-player" preload="metadata"></audio>
+
+
+    <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closeAuthModal()"></div>
+        <div class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in border border-white/10 shadow-2xl">
+            <button onclick="closeAuthModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl">✕</button>
+
+
+            <div id="auth-login">
+                <div class="text-center mb-6">
+                    <div class="text-4xl mb-2">🎵</div>
+                    <h2 class="text-2xl font-bold">Bem-vindo de volta</h2>
+                    <p class="text-gray-400 text-sm mt-1">Entre na sua conta MusicFlow</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">E-mail</label>
+                        <input id="l-email" type="email" placeholder="voce@email.com"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition" />
+                        <p id="l-email-err" class="text-red-400 text-xs mt-1 hidden">E-mail inválido.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">Senha</label>
+                        <div class="relative">
+                            <input id="l-pass" type="password" placeholder="••••••••"
+                                class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm outline-none focus:border-primary-500 transition" />
+                            <button type="button" onclick="toggleVis('l-pass')"
+                                class="absolute right-3 top-2.5 text-gray-400 hover:text-white text-sm">👁</button>
+                        </div>
+                        <p id="l-pass-err" class="text-red-400 text-xs mt-1 hidden">Mínimo 6 caracteres.</p>
+                    </div>
+                    <label class="flex items-center gap-2 cursor-pointer text-sm"><input id="l-remember" type="checkbox"
+                            class="accent-primary-500" /> Lembrar de mim</label>
+                    <button id="l-btn" onclick="doLogin()"
+                        class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">Entrar</button>
+                </div>
+                <p class="text-center text-sm text-gray-400 mt-5">Sem conta? <button onclick="switchAuth('register')"
+                        class="text-primary-400 hover:text-primary-300 font-medium">Criar conta</button></p>
+            </div>
+
+
+            <div id="auth-register" class="hidden">
+                <div class="text-center mb-6">
+                    <div class="text-4xl mb-2">🚀</div>
+                    <h2 class="text-2xl font-bold">Criar conta</h2>
+                    <p class="text-gray-400 text-sm mt-1">14 dias grátis — sem cartão</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">Nome</label>
+                        <input id="r-name" type="text" placeholder="Seu nome"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition" />
+                        <p id="r-name-err" class="text-red-400 text-xs mt-1 hidden">Nome obrigatório.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">E-mail</label>
+                        <input id="r-email" type="email" placeholder="voce@email.com"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition" />
+                        <p id="r-email-err" class="text-red-400 text-xs mt-1 hidden">E-mail inválido.</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-1.5">Senha</label>
+                        <input id="r-pass" type="password" placeholder="Mín. 6 caracteres"
+                            class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition" />
+                        <div id="r-strength" class="h-1 rounded-full mt-1.5 transition-all w-0 bg-red-500"></div>
+                        <p id="r-pass-err" class="text-red-400 text-xs mt-1 hidden">Mínimo 6 caracteres.</p>
+                    </div>
+                    <button id="r-btn" onclick="doRegister()"
+                        class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition">Criar
+                        conta grátis</button>
+                </div>
+                <p class="text-center text-sm text-gray-400 mt-5">Já tem conta? <button onclick="switchAuth('login')"
+                        class="text-primary-400 hover:text-primary-300 font-medium">Entrar</button></p>
+            </div>
+
+
+            <div id="auth-profile" class="hidden text-center">
+                <img id="p-avatar" src=""
+                    class="w-20 h-20 rounded-full mx-auto mb-4 ring-4 ring-primary-500 object-cover" alt="" />
+                <h2 id="p-name" class="text-xl font-bold"></h2>
+                <p id="p-email" class="text-gray-400 text-sm mb-1"></p>
+                <span id="p-plan-badge"
+                    class="inline-block text-xs px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 font-semibold mb-5">⭐
+                    Premium</span>
+                <div class="grid grid-cols-3 gap-3 mb-5">
+                    <div class="glass rounded-xl p-3">
+                        <div id="p-tracks" class="text-xl font-bold text-primary-400">0</div>
+                        <div class="text-xs text-gray-400">Músicas</div>
+                    </div>
+                    <div class="glass rounded-xl p-3">
+                        <div id="p-time" class="text-xl font-bold text-green-400">0h</div>
+                        <div class="text-xs text-gray-400">Ouvidas</div>
+                    </div>
+                    <div class="glass rounded-xl p-3">
+                        <div id="p-days" class="text-xl font-bold text-pink-400">14</div>
+                        <div class="text-xs text-gray-400">Dias trial</div>
+                    </div>
+                </div>
+                <button onclick="closeAuthModal()"
+                    class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition mb-2">Fechar</button>
+                <button onclick="doLogout()"
+                    class="w-full text-red-400 hover:bg-red-500/10 py-2 rounded-xl text-sm transition">Sair da
+                    conta</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="premium-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closePremium()"></div>
+        <div
+            class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in border border-yellow-500/30 shadow-2xl">
+            <button onclick="closePremium()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl">✕</button>
+            <div class="text-center mb-6">
+                <div class="text-5xl mb-3">👑</div>
+                <h2 class="text-2xl font-bold">MusicFlow <span class="grad">Premium</span></h2>
+                <p class="text-gray-400 text-sm mt-1">Desbloqueie o melhor da música</p>
+            </div>
+            <div class="space-y-3 mb-6 text-sm">
+                <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Visualizador de áudio em
+                        tempo real</span></div>
+                <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Modo offline com cache
+                        avançado</span></div>
+                <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Equalizer customizável
+                        (10 bandas)</span></div>
+                <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Estatísticas de
+                        reprodução detalhadas</span></div>
+                <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Playlists ilimitadas e
+                        smart shuffle</span></div>
+                <div class="flex items-center gap-3 text-gray-500"><span>✗</span><span>Anúncios (nunca)</span></div>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-5">
+                <div class="glass rounded-xl p-4 text-center cursor-pointer hover:border-primary-500 border border-transparent transition"
+                    onclick="selectPlan('monthly')">
+                    <div class="text-2xl font-bold">R$9<span class="text-base font-normal text-gray-400">/mês</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Plano Mensal</div>
+                </div>
+                <div class="glass rounded-xl p-4 text-center cursor-pointer hover:border-primary-500 border border-primary-500 transition relative"
+                    onclick="selectPlan('yearly')">
+                    <div
+                        class="absolute -top-2 left-1/2 -translate-x-1/2 bg-green-500 text-xs font-bold px-2 py-0.5 rounded-full">
+                        SALVE 40%</div>
+                    <div class="text-2xl font-bold">R$65<span class="text-base font-normal text-gray-400">/ano</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">Plano Anual</div>
+                </div>
+            </div>
+            <button onclick="activatePremium()"
+                class="w-full bg-gradient-to-r from-primary-600 to-pink-600 hover:opacity-90 font-semibold py-3 rounded-xl transition text-base">
+                ⭐ Começar trial grátis de 14 dias
             </button>
-          </div>
+            <p class="text-center text-xs text-gray-500 mt-3">Cancele a qualquer momento • Sem cartão no trial</p>
         </div>
-
-      </div><!-- end now-playing -->
-    </main>
-  </div>
-
-  <!-- ===== SHORTCUTS MODAL ===== -->
-  <div id="shortcuts-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeShortcuts()"></div>
-    <div class="relative glass rounded-2xl w-full max-w-sm p-6 animate-fade-in border border-white/10">
-      <button onclick="closeShortcuts()"
-        class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-lg">✕</button>
-      <h3 class="font-bold text-lg mb-4">⌨️ Atalhos de teclado</h3>
-      <div class="space-y-2 text-sm">
-        <div class="flex justify-between"><span class="text-gray-400">Play / Pause</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">Espaço</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Próxima</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">→</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Anterior</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">←</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Volume +</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">↑</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Volume -</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">↓</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Mudo</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">M</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Aleatório</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">S</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">Repetir</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">R</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">+10 segundos</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">L</kbd></div>
-        <div class="flex justify-between"><span class="text-gray-400">-10 segundos</span><kbd
-            class="bg-white/10 px-2 py-0.5 rounded font-mono text-xs">J</kbd></div>
-      </div>
-    </div>
-  </div>
-
-  <audio id="audio-player" preload="metadata"></audio>
-
-<!-- ===== AUTH MODAL ===== -->
-<div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closeAuthModal()"></div>
-  <div class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in border border-white/10 shadow-2xl">
-    <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl">✕</button>
-
-    <!-- Login -->
-    <div id="auth-login">
-      <div class="text-center mb-6">
-        <div class="text-4xl mb-2">🎵</div>
-        <h2 class="text-2xl font-bold">Bem-vindo de volta</h2>
-        <p class="text-gray-400 text-sm mt-1">Entre na sua conta MusicFlow</p>
-      </div>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1.5">E-mail</label>
-          <input id="l-email" type="email" placeholder="voce@email.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
-          <p id="l-email-err" class="text-red-400 text-xs mt-1 hidden">E-mail inválido.</p>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1.5">Senha</label>
-          <div class="relative">
-            <input id="l-pass" type="password" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 pr-10 text-sm outline-none focus:border-primary-500 transition"/>
-            <button type="button" onclick="toggleVis('l-pass')" class="absolute right-3 top-2.5 text-gray-400 hover:text-white text-sm">👁</button>
-          </div>
-          <p id="l-pass-err" class="text-red-400 text-xs mt-1 hidden">Mínimo 6 caracteres.</p>
-        </div>
-        <label class="flex items-center gap-2 cursor-pointer text-sm"><input id="l-remember" type="checkbox" class="accent-primary-500"/> Lembrar de mim</label>
-        <button id="l-btn" onclick="doLogin()" class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">Entrar</button>
-      </div>
-      <p class="text-center text-sm text-gray-400 mt-5">Sem conta? <button onclick="switchAuth('register')" class="text-primary-400 hover:text-primary-300 font-medium">Criar conta</button></p>
     </div>
 
-    <!-- Register -->
-    <div id="auth-register" class="hidden">
-      <div class="text-center mb-6">
-        <div class="text-4xl mb-2">🚀</div>
-        <h2 class="text-2xl font-bold">Criar conta</h2>
-        <p class="text-gray-400 text-sm mt-1">14 dias grátis — sem cartão</p>
-      </div>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1.5">Nome</label>
-          <input id="r-name" type="text" placeholder="Seu nome" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
-          <p id="r-name-err" class="text-red-400 text-xs mt-1 hidden">Nome obrigatório.</p>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1.5">E-mail</label>
-          <input id="r-email" type="email" placeholder="voce@email.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
-          <p id="r-email-err" class="text-red-400 text-xs mt-1 hidden">E-mail inválido.</p>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-400 mb-1.5">Senha</label>
-          <input id="r-pass" type="password" placeholder="Mín. 6 caracteres" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-primary-500 transition"/>
-          <div id="r-strength" class="h-1 rounded-full mt-1.5 transition-all w-0 bg-red-500"></div>
-          <p id="r-pass-err" class="text-red-400 text-xs mt-1 hidden">Mínimo 6 caracteres.</p>
-        </div>
-        <button id="r-btn" onclick="doRegister()" class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition">Criar conta grátis</button>
-      </div>
-      <p class="text-center text-sm text-gray-400 mt-5">Já tem conta? <button onclick="switchAuth('login')" class="text-primary-400 hover:text-primary-300 font-medium">Entrar</button></p>
-    </div>
 
-    <!-- Profile -->
-    <div id="auth-profile" class="hidden text-center">
-      <img id="p-avatar" src="" class="w-20 h-20 rounded-full mx-auto mb-4 ring-4 ring-primary-500 object-cover" alt=""/>
-      <h2 id="p-name" class="text-xl font-bold"></h2>
-      <p id="p-email" class="text-gray-400 text-sm mb-1"></p>
-      <span id="p-plan-badge" class="inline-block text-xs px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 font-semibold mb-5">⭐ Premium</span>
-      <div class="grid grid-cols-3 gap-3 mb-5">
-        <div class="glass rounded-xl p-3"><div id="p-tracks" class="text-xl font-bold text-primary-400">0</div><div class="text-xs text-gray-400">Músicas</div></div>
-        <div class="glass rounded-xl p-3"><div id="p-time" class="text-xl font-bold text-green-400">0h</div><div class="text-xs text-gray-400">Ouvidas</div></div>
-        <div class="glass rounded-xl p-3"><div id="p-days" class="text-xl font-bold text-pink-400">14</div><div class="text-xs text-gray-400">Dias trial</div></div>
-      </div>
-      <button onclick="closeAuthModal()" class="w-full bg-primary-600 hover:bg-primary-700 font-semibold py-2.5 rounded-xl transition mb-2">Fechar</button>
-      <button onclick="doLogout()" class="w-full text-red-400 hover:bg-red-500/10 py-2 rounded-xl text-sm transition">Sair da conta</button>
-    </div>
-  </div>
-</div>
-
-<!-- ===== PREMIUM MODAL ===== -->
-<div id="premium-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/75 backdrop-blur-sm" onclick="closePremium()"></div>
-  <div class="relative glass rounded-2xl w-full max-w-md p-8 animate-fade-in border border-yellow-500/30 shadow-2xl">
-    <button onclick="closePremium()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition text-xl">✕</button>
-    <div class="text-center mb-6">
-      <div class="text-5xl mb-3">👑</div>
-      <h2 class="text-2xl font-bold">MusicFlow <span class="grad">Premium</span></h2>
-      <p class="text-gray-400 text-sm mt-1">Desbloqueie o melhor da música</p>
-    </div>
-    <div class="space-y-3 mb-6 text-sm">
-      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Visualizador de áudio em tempo real</span></div>
-      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Modo offline com cache avançado</span></div>
-      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Equalizer customizável (10 bandas)</span></div>
-      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Estatísticas de reprodução detalhadas</span></div>
-      <div class="flex items-center gap-3"><span class="text-green-400">✓</span><span>Playlists ilimitadas e smart shuffle</span></div>
-      <div class="flex items-center gap-3 text-gray-500"><span>✗</span><span>Anúncios (nunca)</span></div>
-    </div>
-    <div class="grid grid-cols-2 gap-3 mb-5">
-      <div class="glass rounded-xl p-4 text-center cursor-pointer hover:border-primary-500 border border-transparent transition" onclick="selectPlan('monthly')">
-        <div class="text-2xl font-bold">R$9<span class="text-base font-normal text-gray-400">/mês</span></div>
-        <div class="text-xs text-gray-400 mt-1">Plano Mensal</div>
-      </div>
-      <div class="glass rounded-xl p-4 text-center cursor-pointer hover:border-primary-500 border border-primary-500 transition relative" onclick="selectPlan('yearly')">
-        <div class="absolute -top-2 left-1/2 -translate-x-1/2 bg-green-500 text-xs font-bold px-2 py-0.5 rounded-full">SALVE 40%</div>
-        <div class="text-2xl font-bold">R$65<span class="text-base font-normal text-gray-400">/ano</span></div>
-        <div class="text-xs text-gray-400 mt-1">Plano Anual</div>
-      </div>
-    </div>
-    <button onclick="activatePremium()" class="w-full bg-gradient-to-r from-primary-600 to-pink-600 hover:opacity-90 font-semibold py-3 rounded-xl transition text-base">
-      ⭐ Começar trial grátis de 14 dias
-    </button>
-    <p class="text-center text-xs text-gray-500 mt-3">Cancele a qualquer momento • Sem cartão no trial</p>
-  </div>
-</div>
-
-<!-- ===== USER BTN (injected in header) — handled by JS ===== -->
-
-<script>
-(function(){
-'use strict';
-
-// ── STATE ──────────────────────────────────────────────────────────────
-const SK = {USER:'mf_user',PREFS:'mf_prefs',STATS:'mf_stats'};
-let tracks = [];        // {name, artist, duration, url, size}
-let currentIdx = -1;
-let isPlaying = false;
-let isShuffle = false;
-let repeatMode = 0;     // 0=off 1=all 2=one
-let isMuted = false;
-let prevVol = 80;
-let shuffleHistory = [];
-let totalListenSecs = 0;
-let statsInterval = null;
-let analyserNode = null, audioCtx = null, sourceNode = null, animFrame = null;
-
-const audio = document.getElementById('audio-player');
-const progressEl = document.getElementById('progress');
-const volEl = document.getElementById('volume');
-
-// ── INIT ──────────────────────────────────────────────────────────────
-function init() {
-  applyPrefs();
-  restoreSession();
-  initDropZone();
-  initFileInput();
-  initAudioEvents();
-  initProgressBar();
-  initVolumeBar();
-  initKeyboard();
-  renderUserNav();
-  // Mobile sidebar toggle if needed
-  window.addEventListener('resize', () => {});
-}
-
-// ── PREFS (dark mode, volume) ──────────────────────────────────────────
-function applyPrefs() {
-  const p = JSON.parse(localStorage.getItem(SK.PREFS)||'{}');
-  if (p.dark === false) document.documentElement.classList.remove('dark');
-  if (p.vol != null) { volEl.value = p.vol; audio.volume = p.vol / 100; document.getElementById('vol-pct').textContent = p.vol + '%'; }
-  else { audio.volume = 0.8; }
-}
-window.toggleTheme = function() {
-  const dark = document.documentElement.classList.toggle('dark');
-  document.getElementById('theme-btn').textContent = dark ? '🌙' : '☀️';
-  savePrefs({dark});
-};
-function savePrefs(patch) {
-  const p = JSON.parse(localStorage.getItem(SK.PREFS)||'{}');
-  localStorage.setItem(SK.PREFS, JSON.stringify({...p,...patch}));
-}
-
-// ── AUTH ──────────────────────────────────────────────────────────────
-function restoreSession() {
-  const u = JSON.parse(localStorage.getItem(SK.USER)||'null');
-  if (u) applyUser(u);
-}
-window.openAuthModal = function(view='login') {
-  document.getElementById('auth-modal').classList.remove('hidden');
-  ['auth-login','auth-register','auth-profile'].forEach(id => document.getElementById(id).classList.add('hidden'));
-  document.getElementById('auth-'+view).classList.remove('hidden');
-  if (view === 'profile') fillProfile();
-};
-window.closeAuthModal = function() { document.getElementById('auth-modal').classList.add('hidden'); };
-window.switchAuth = function(v) { openAuthModal(v); };
-window.toggleVis = function(id) { const el=document.getElementById(id); el.type=el.type==='password'?'text':'password'; };
-
-window.doLogin = function() {
-  const email = document.getElementById('l-email').value.trim();
-  const pass = document.getElementById('l-pass').value;
-  let ok = true;
-  const emailOk = /\S+@\S+\.\S+/.test(email);
-  document.getElementById('l-email-err').classList.toggle('hidden', emailOk); if(!emailOk) ok=false;
-  const passOk = pass.length >= 6;
-  document.getElementById('l-pass-err').classList.toggle('hidden', passOk); if(!passOk) ok=false;
-  if(!ok) return;
-  const btn = document.getElementById('l-btn'); btn.textContent='⏳ Entrando…'; btn.disabled=true;
-  setTimeout(() => {
-    const user = { name: email.split('@')[0].replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()), email, avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`, plan:'premium', trialDays:14 };
-    if(document.getElementById('l-remember').checked) localStorage.setItem(SK.USER, JSON.stringify(user));
-    applyUser(user, true);
-    closeAuthModal();
-    btn.textContent='Entrar'; btn.disabled=false;
-  }, 1000);
-};
-
-window.doRegister = function() {
-  const name= document.getElementById('r-name').value.trim();
-  const email=document.getElementById('r-email').value.trim();
-  const pass =document.getElementById('r-pass').value;
-  let ok=true;
-  document.getElementById('r-name-err').classList.toggle('hidden', name.length>0); if(!name) ok=false;
-  const emailOk=/\S+@\S+\.\S+/.test(email);
-  document.getElementById('r-email-err').classList.toggle('hidden', emailOk); if(!emailOk) ok=false;
-  const passOk=pass.length>=6;
-  document.getElementById('r-pass-err').classList.toggle('hidden', passOk); if(!passOk) ok=false;
-  if(!ok) return;
-  document.getElementById('r-pass').addEventListener('input', e=>{
-    const score=[/[A-Z]/.test(e.target.value),/[0-9]/.test(e.target.value),e.target.value.length>=8].filter(Boolean).length;
-    const bar=document.getElementById('r-strength');
-    bar.className=`h-1 rounded-full mt-1.5 transition-all ${['bg-red-500','bg-yellow-400','bg-green-400','bg-green-500'][score]}`;
-    bar.style.width=['25%','50%','75%','100%'][score];
-  });
-  const btn=document.getElementById('r-btn'); btn.textContent='⏳ Criando…'; btn.disabled=true;
-  setTimeout(()=>{
-    const user={name,email,avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,plan:'premium',trialDays:14};
-    localStorage.setItem(SK.USER, JSON.stringify(user));
-    applyUser(user, true);
-    closeAuthModal();
-    btn.textContent='Criar conta grátis'; btn.disabled=false;
-  }, 1200);
-};
-
-function applyUser(user, showToast=false) {
-  renderUserNav(user);
-  if(showToast) toast(`👋 Olá, ${user.name.split(' ')[0]}!`, 'success');
-}
-window.doLogout = function() {
-  localStorage.removeItem(SK.USER);
-  renderUserNav(null);
-  closeAuthModal();
-  toast('👋 Saiu da conta', 'info');
-};
-
-function fillProfile() {
-  const u = JSON.parse(localStorage.getItem(SK.USER)||'{}');
-  const stats = JSON.parse(localStorage.getItem(SK.STATS)||'{}');
-  document.getElementById('p-avatar').src = u.avatar||'';
-  document.getElementById('p-name').textContent = u.name||'';
-  document.getElementById('p-email').textContent = u.email||'';
-  document.getElementById('p-plan-badge').textContent = u.plan==='premium' ? '⭐ Premium' : 'Plano Free';
-  document.getElementById('p-tracks').textContent = tracks.length;
-  const hrs = Math.floor((stats.secs||0)/3600);
-  document.getElementById('p-time').textContent = hrs + 'h';
-  document.getElementById('p-days').textContent = u.trialDays||0;
-}
-
-function renderUserNav(user) {
-  // Remove existing user nav if any
-  document.getElementById('user-nav-slot')?.remove();
-  const header = document.querySelector('header .flex.items-center.gap-3:last-child');
-  if(!header) return;
-  const slot = document.createElement('div');
-  slot.id = 'user-nav-slot';
-  slot.className = 'flex items-center gap-2';
-  if(user) {
-    slot.innerHTML = `
-      <button onclick="openPremium()" class="hidden md:flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 transition font-semibold">👑 Premium</button>
-      <button onclick="openAuthModal('profile')" class="flex items-center gap-2 px-2 py-1 rounded-xl hover:bg-white/10 transition">
-        <img src="${user.avatar}" class="w-8 h-8 rounded-full ring-2 ring-primary-500" alt="${user.name}"/>
-        <span class="hidden md:block text-sm font-medium">${user.name.split(' ')[0]}</span>
-      </button>`;
-  } else {
-    slot.innerHTML = `
-      <button onclick="openAuthModal('login')" class="px-3 py-1.5 text-sm font-medium rounded-lg hover:bg-white/10 transition">Entrar</button>
-      <button onclick="openAuthModal('register')" class="px-4 py-1.5 text-sm font-semibold rounded-xl bg-primary-600 hover:bg-primary-700 transition">Começar grátis</button>`;
-  }
-  header.insertBefore(slot, header.firstChild);
-}
-
-// ── PREMIUM MODAL ──────────────────────────────────────────────────────
-window.openPremium = function() { document.getElementById('premium-modal').classList.remove('hidden'); };
-window.closePremium = function() { document.getElementById('premium-modal').classList.add('hidden'); };
-window.selectPlan = function(plan) {
-  document.querySelectorAll('#premium-modal .glass.rounded-xl').forEach(el=>el.classList.remove('border-primary-500'));
-  // highlight selected
-};
-window.activatePremium = function() {
-  const u = JSON.parse(localStorage.getItem(SK.USER)||'null');
-  if(!u) { closePremium(); openAuthModal('register'); return; }
-  u.plan='premium'; u.trialDays=14;
-  localStorage.setItem(SK.USER, JSON.stringify(u));
-  closePremium();
-  toast('🎉 Trial Premium ativado por 14 dias!', 'success');
-};
-
-// ── FILE INPUT & DROP ─────────────────────────────────────────────────
-function initFileInput() {
-  document.getElementById('file-input').addEventListener('change', e => addFiles(e.target.files));
-}
-function initDropZone() {
-  const body = document.body;
-  body.addEventListener('dragover', e => { e.preventDefault(); document.getElementById('drop-zone')?.classList.add('drag-over'); });
-  body.addEventListener('dragleave', e => { if(!e.relatedTarget) document.getElementById('drop-zone')?.classList.remove('drag-over'); });
-  body.addEventListener('drop', e => {
-    e.preventDefault();
-    document.getElementById('drop-zone')?.classList.remove('drag-over');
-    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('audio/'));
-    if(files.length) addFiles(files);
-    else toast('⚠️ Nenhum arquivo de áudio detectado', 'warning');
-  });
-  document.getElementById('drop-zone').addEventListener('click', () => document.getElementById('file-input').click());
-}
-
-function addFiles(files) {
-  const arr = Array.from(files).filter(f=>f.type.startsWith('audio/')||/\.(mp3|wav|flac|ogg|aac|m4a|opus)$/i.test(f.name));
-  if(!arr.length) { toast('Nenhum áudio encontrado', 'warning'); return; }
-  const prev = tracks.length;
-  arr.forEach(file => {
-    const url = URL.createObjectURL(file);
-    const name = file.name.replace(/\.[^.]+$/,'').replace(/[-_]/g,' ');
-    // Try to split "Artist - Title" pattern
-    const parts = name.split(' - ');
-    const title = parts.length > 1 ? parts.slice(1).join(' - ').trim() : name;
-    const artist = parts.length > 1 ? parts[0].trim() : 'Desconhecido';
-    tracks.push({ name: title, artist, duration: 0, url, size: file.size, file });
-    // Load duration async
-    const tmp = new Audio(); tmp.src = url;
-    const idx = tracks.length - 1;
-    tmp.addEventListener('loadedmetadata', () => { tracks[idx].duration = tmp.duration; renderTrackList(); });
-  });
-  renderTrackList();
-  updatePlaylistInfo();
-  toast(`✅ ${arr.length} música(s) adicionada(s)`, 'success');
-  if(prev === 0 && tracks.length > 0) loadTrack(0);
-}
-
-// ── RENDER TRACK LIST ─────────────────────────────────────────────────
-function renderTrackList(filter='') {
-  const list = document.getElementById('track-list');
-  const dz = document.getElementById('drop-zone');
-  if(!tracks.length) { dz.style.display=''; list.innerHTML=''; list.appendChild(dz); return; }
-  dz.style.display='none';
-  const q = filter.toLowerCase();
-  const filtered = tracks.map((t,i)=>({...t,i})).filter(t => !q || t.name.toLowerCase().includes(q) || t.artist.toLowerCase().includes(q));
-  list.innerHTML = filtered.map(t => `
-    <div class="track-row rounded-xl px-3 py-2.5 flex items-center gap-3 ${t.i===currentIdx?'active':''}" onclick="loadTrack(${t.i})" role="button" tabindex="0" aria-label="${t.name}">
-      <div class="flex-shrink-0 w-9 h-9 rounded-lg bg-primary-500/20 flex items-center justify-center text-primary-400 font-bold text-sm">${t.i===currentIdx?(isPlaying?'▶':'❚❚'):(t.i+1)}</div>
-      <div class="flex-1 min-w-0">
-        <div class="text-sm font-medium truncate ${t.i===currentIdx?'text-primary-300':'text-white'}">${t.name}</div>
-        <div class="text-xs text-gray-500 truncate">${t.artist}</div>
-      </div>
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <span class="text-xs text-gray-500">${fmtTime(t.duration)}</span>
-        <button onclick="removeTrack(event,${t.i})" class="text-gray-600 hover:text-red-400 transition text-sm" aria-label="Remover">✕</button>
-      </div>
-    </div>`).join('');
-  // Scroll active track into view
-  setTimeout(() => {
-    const active = list.querySelector('.active');
-    if(active) active.scrollIntoView({block:'nearest',behavior:'smooth'});
-  }, 50);
-}
-
-window.removeTrack = function(e, idx) {
-  e.stopPropagation();
-  URL.revokeObjectURL(tracks[idx].url);
-  tracks.splice(idx, 1);
-  if(currentIdx === idx) { audio.pause(); setPlaying(false); currentIdx = Math.min(idx, tracks.length-1); if(tracks.length) loadTrack(currentIdx); else showEmpty(); }
-  else if(currentIdx > idx) currentIdx--;
-  renderTrackList(); updatePlaylistInfo();
-};
-
-window.clearPlaylist = function() {
-  tracks.forEach(t => URL.revokeObjectURL(t.url)); tracks=[];
-  currentIdx=-1; audio.pause(); setPlaying(false);
-  renderTrackList(); showEmpty(); updatePlaylistInfo();
-  toast('🗑 Playlist limpa', 'info');
-};
-
-window.sortPlaylist = function(by) {
-  tracks.sort((a,b)=> by==='name' ? a.name.localeCompare(b.name) : a.artist.localeCompare(b.artist));
-  renderTrackList(); toast('↕ Playlist ordenada', 'info');
-};
-
-function updatePlaylistInfo() {
-  const count = tracks.length;
-  const total = tracks.reduce((s,t)=>s+t.duration,0);
-  document.getElementById('track-count').textContent = `${count} música${count!==1?'s':''}`;
-  document.getElementById('playlist-info').textContent = count ? `${count} faixa${count!==1?'s':''} • ${fmtTime(total)}` : 'Playlist vazia';
-}
-
-// ── LOAD & PLAY ───────────────────────────────────────────────────────
-function loadTrack(idx) {
-  if(!tracks.length || idx < 0 || idx >= tracks.length) return;
-  currentIdx = idx;
-  const t = tracks[idx];
-  audio.src = t.url;
-  audio.load();
-  audio.play().then(()=>setPlaying(true)).catch(()=>{});
-  document.getElementById('now-title').textContent = t.name;
-  document.getElementById('now-artist').textContent = t.artist || 'Artista Desconhecido';
-  document.getElementById('empty-player').classList.add('hidden');
-  document.getElementById('now-playing').classList.remove('hidden');
-  drawCover(t.name);
-  renderTrackList(document.getElementById('search-input').value);
-  // Media Session API
-  if('mediaSession' in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({ title: t.name, artist: t.artist, album: 'MusicFlow' });
-    navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
-    navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
-    navigator.mediaSession.setActionHandler('play', ()=>audio.play());
-    navigator.mediaSession.setActionHandler('pause', ()=>audio.pause());
-  }
-  // Init Web Audio
-  initWebAudio();
-}
-
-function showEmpty() {
-  document.getElementById('empty-player').classList.remove('hidden');
-  document.getElementById('now-playing').classList.add('hidden');
-}
-
-function setPlaying(val) {
-  isPlaying = val;
-  document.getElementById('icon-play').classList.toggle('hidden', val);
-  document.getElementById('icon-pause').classList.toggle('hidden', !val);
-  const art = document.getElementById('art-canvas');
-  art.classList.toggle('paused', !val);
-  const eq = document.getElementById('eq-indicator');
-  eq.style.opacity = val ? '1' : '0';
-  eq.classList.toggle('playing', val);
-  // Stats
-  if(val) statsInterval = statsInterval || setInterval(()=>{ totalListenSecs++; saveStats(); }, 1000);
-  else { clearInterval(statsInterval); statsInterval=null; }
-}
-
-// ── CONTROLS ──────────────────────────────────────────────────────────
-window.togglePlay = function() {
-  if(!tracks.length) return;
-  if(isPlaying) audio.pause(); else audio.play();
-};
-window.nextTrack = function() {
-  if(!tracks.length) return;
-  if(isShuffle) { let n; do { n=Math.floor(Math.random()*tracks.length); } while(n===currentIdx&&tracks.length>1); loadTrack(n); }
-  else { loadTrack((currentIdx+1)%tracks.length); }
-};
-window.prevTrack = function() {
-  if(!tracks.length) return;
-  if(audio.currentTime > 3) { audio.currentTime=0; return; }
-  loadTrack((currentIdx-1+tracks.length)%tracks.length);
-};
-window.toggleShuffle = function() {
-  isShuffle = !isShuffle;
-  document.getElementById('btn-shuffle').classList.toggle('text-primary-400', isShuffle);
-  document.getElementById('btn-shuffle').classList.toggle('text-gray-400', !isShuffle);
-  toast(isShuffle ? '🔀 Aleatório ativado' : '🔀 Aleatório desativado', 'info');
-};
-window.cycleRepeat = function() {
-  repeatMode = (repeatMode+1)%3;
-  const btn = document.getElementById('btn-repeat');
-  const badge = document.getElementById('repeat-badge');
-  btn.classList.toggle('text-primary-400', repeatMode>0);
-  btn.classList.toggle('text-gray-400', repeatMode===0);
-  badge.classList.toggle('hidden', repeatMode!==2);
-  const msgs=['🔁 Repetição desativada','🔁 Repetir tudo','🔂 Repetir esta'];
-  toast(msgs[repeatMode], 'info');
-};
-window.toggleMute = function() {
-  isMuted = !isMuted;
-  audio.muted = isMuted;
-  document.getElementById('vol-icon').textContent = isMuted ? '🔇' : (audio.volume>0.5?'🔊':'🔉');
-};
-
-// ── AUDIO EVENTS ──────────────────────────────────────────────────────
-function initAudioEvents() {
-  audio.addEventListener('play', ()=>setPlaying(true));
-  audio.addEventListener('pause', ()=>setPlaying(false));
-  audio.addEventListener('ended', ()=>{
-    if(repeatMode===2) { audio.currentTime=0; audio.play(); return; }
-    nextTrack();
-  });
-  audio.addEventListener('timeupdate', ()=>{
-    if(!audio.duration) return;
-    const pct = (audio.currentTime/audio.duration)*100;
-    progressEl.value = pct;
-    progressEl.style.background = `linear-gradient(to right, #8b5cf6 ${pct}%, rgba(255,255,255,.15) ${pct}%)`;
-    document.getElementById('time-current').textContent = fmtTime(audio.currentTime);
-    document.getElementById('time-total').textContent = fmtTime(audio.duration);
-  });
-  audio.addEventListener('loadedmetadata', ()=>{
-    document.getElementById('time-total').textContent = fmtTime(audio.duration);
-    if(tracks[currentIdx]) tracks[currentIdx].duration = audio.duration;
-    updatePlaylistInfo();
-  });
-  audio.addEventListener('error', ()=>toast('❌ Erro ao reproduzir arquivo','error'));
-}
-function initProgressBar() {
-  progressEl.addEventListener('input', ()=>{ if(audio.duration) audio.currentTime = (progressEl.value/100)*audio.duration; });
-}
-function initVolumeBar() {
-  volEl.addEventListener('input', ()=>{
-    const v = parseInt(volEl.value);
-    audio.volume = v/100; audio.muted = false; isMuted=false;
-    document.getElementById('vol-pct').textContent = v+'%';
-    document.getElementById('vol-icon').textContent = v===0?'🔇':v<50?'🔉':'🔊';
-    savePrefs({vol:v});
-  });
-}
-
-// ── SEARCH ────────────────────────────────────────────────────────────
-document.getElementById('search-input').addEventListener('input', e => renderTrackList(e.target.value));
-
-// ── WEB AUDIO + VISUALIZER ────────────────────────────────────────────
-function initWebAudio() {
-  if(sourceNode) { try{sourceNode.disconnect();}catch(_){} }
-  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended') audioCtx.resume();
-  analyserNode = audioCtx.createAnalyser();
-  analyserNode.fftSize = 256;
-  sourceNode = audioCtx.createMediaElementSource(audio);
-  sourceNode.connect(analyserNode);
-  analyserNode.connect(audioCtx.destination);
-  drawVisualizer();
-}
-
-function drawVisualizer() {
-  const canvas = document.getElementById('visualizer');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const W = canvas.offsetWidth, H = canvas.offsetHeight;
-  const bufLen = analyserNode ? analyserNode.frequencyBinCount : 128;
-  const dataArr = new Uint8Array(bufLen);
-  function draw() {
-    animFrame = requestAnimationFrame(draw);
-    ctx.clearRect(0,0,W,H);
-    if(analyserNode && isPlaying) {
-      analyserNode.getByteFrequencyData(dataArr);
-    } else {
-      dataArr.fill(0);
-    }
-    const barW = (W / bufLen) * 2.2;
-    let x = 0;
-    for(let i=0; i<bufLen; i++){
-      const v = dataArr[i]/255;
-      const h = v * H;
-      const grad = ctx.createLinearGradient(0,H-h,0,H);
-      grad.addColorStop(0,'rgba(236,72,153,0.9)');
-      grad.addColorStop(1,'rgba(139,92,246,0.7)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(x, H-h, barW-1, h);
-      x += barW;
-    }
-  }
-  if(animFrame) cancelAnimationFrame(animFrame);
-  draw();
-}
-
-// ── ALBUM ART (canvas drawn) ──────────────────────────────────────────
-function drawCover(name) {
-  const canvas = document.getElementById('art-canvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  // Create a color from title hash
-  let hash = 0; for(const c of name) hash = ((hash<<5)-hash)+c.charCodeAt(0);
-  const h1 = Math.abs(hash % 360);
-  const h2 = (h1 + 120) % 360;
-  const grad = ctx.createLinearGradient(0,0,W,H);
-  grad.addColorStop(0, `hsl(${h1},70%,35%)`);
-  grad.addColorStop(1, `hsl(${h2},80%,25%)`);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,H);
-  // Musical note overlay
-  ctx.font = `${W*0.35}px serif`;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.globalAlpha = 0.25;
-  ctx.fillStyle = '#fff';
-  ctx.fillText('♪', W/2+10, H/2+10);
-  ctx.globalAlpha = 1;
-  // Initials
-  ctx.font = `bold ${W*0.18}px Inter, sans-serif`;
-  ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText(name.slice(0,2).toUpperCase(), W/2, H/2);
-}
-
-// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────
-function initKeyboard() {
-  document.addEventListener('keydown', e => {
-    const tag = document.activeElement.tagName;
-    if(tag==='INPUT'||tag==='TEXTAREA') return;
-    switch(e.key) {
-      case ' ': e.preventDefault(); togglePlay(); break;
-      case 'ArrowRight': nextTrack(); break;
-      case 'ArrowLeft': prevTrack(); break;
-      case 'ArrowUp': e.preventDefault(); volEl.value=Math.min(100,+volEl.value+5); volEl.dispatchEvent(new Event('input')); break;
-      case 'ArrowDown': e.preventDefault(); volEl.value=Math.max(0,+volEl.value-5); volEl.dispatchEvent(new Event('input')); break;
-      case 'm': case 'M': toggleMute(); break;
-      case 's': case 'S': toggleShuffle(); break;
-      case 'r': case 'R': cycleRepeat(); break;
-      case 'l': case 'L': if(audio.duration) audio.currentTime=Math.min(audio.duration, audio.currentTime+10); break;
-      case 'j': case 'J': if(audio.duration) audio.currentTime=Math.max(0, audio.currentTime-10); break;
-      case 'Escape': closeAuthModal(); closePremium(); closeShortcuts(); break;
-    }
-  });
-}
-
-// ── SHORTCUTS MODAL ───────────────────────────────────────────────────
-window.showShortcuts = function() { document.getElementById('shortcuts-modal').classList.remove('hidden'); };
-window.closeShortcuts = function() { document.getElementById('shortcuts-modal').classList.add('hidden'); };
-
-// ── STATS ─────────────────────────────────────────────────────────────
-function saveStats() {
-  const s = JSON.parse(localStorage.getItem(SK.STATS)||'{}');
-  s.secs = (s.secs||0) + 1;
-  localStorage.setItem(SK.STATS, JSON.stringify(s));
-}
-
-// ── EXPORT PLAYLIST INFO ──────────────────────────────────────────────
-window.exportPlaylist = function() {
-  const data = { exportedAt: new Date().toISOString(), tracks: tracks.map(t=>({name:t.name,artist:t.artist,duration:fmtTime(t.duration),size:t.size})) };
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='musicflow-playlist.json'; a.click();
-  toast('📥 Playlist exportada!', 'success');
-};
-
-// ── TOAST ─────────────────────────────────────────────────────────────
-window.toast = function(msg, type='info') {
-  const colors={success:'rgba(22,163,74,.88)',error:'rgba(220,38,38,.88)',info:'rgba(124,58,237,.88)',warning:'rgba(217,119,6,.88)'};
-  const t = document.createElement('div');
-  t.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-xl animate-slide-up';
-  t.style.cssText = `background:${colors[type]||colors.info};min-width:220px;backdrop-filter:blur(12px)`;
-  t.innerHTML = `<span class="flex-1">${msg}</span><button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100 text-lg leading-none">×</button>`;
-  document.getElementById('toast-container').appendChild(t);
-  setTimeout(()=>t?.remove(), 3500);
-};
-
-// ── UTILS ─────────────────────────────────────────────────────────────
-function fmtTime(s) {
-  if(!s||isNaN(s)) return '0:00';
-  const m=Math.floor(s/60), sec=Math.floor(s%60);
-  return `${m}:${String(sec).padStart(2,'0')}`;
-}
-
-// ── BOOT ──────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
-})();
-</script>
+    <script type="module" src="./js/main.js"></script>
 </body>
+
 </html>

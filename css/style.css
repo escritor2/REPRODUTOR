@@ -1,0 +1,182 @@
+* {
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box
+}
+
+html {
+    scroll-behavior: smooth
+}
+
+::-webkit-scrollbar {
+    width: 5px
+}
+
+::-webkit-scrollbar-track {
+    background: transparent
+}
+
+::-webkit-scrollbar-thumb {
+    background: #7c3aed;
+    border-radius: 9px
+}
+
+*:focus-visible {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 2px
+}
+
+.glass {
+    background: rgba(255, 255, 255, .04);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, .08)
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, .3);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, .06)
+}
+
+.grad {
+    background: linear-gradient(135deg, #a78bfa, #ec4899);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent
+}
+
+.spinning {
+    animation: spin 12s linear infinite
+}
+
+.paused {
+    animation-play-state: paused
+}
+
+.progress-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .15);
+    outline: none;
+    cursor: pointer;
+    transition: height .2s
+}
+
+.progress-bar:hover {
+    height: 7px
+}
+
+.progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #8b5cf6;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 0 8px #8b5cf6
+}
+
+.progress-bar::-webkit-slider-runnable-track {
+    border-radius: 9px
+}
+
+.vol-bar {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, .15);
+    cursor: pointer
+}
+
+.vol-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #8b5cf6;
+    border-radius: 50%;
+    cursor: pointer
+}
+
+.eq-bar {
+    display: inline-block;
+    width: 3px;
+    background: linear-gradient(180deg, #ec4899, #8b5cf6);
+    border-radius: 2px;
+    transform-origin: bottom;
+    margin: 0 1px
+}
+
+.playing .eq-bar:nth-child(1) {
+    animation: eq1 .8s ease-in-out infinite alternate
+}
+
+.playing .eq-bar:nth-child(2) {
+    animation: eq1 .5s ease-in-out infinite alternate
+}
+
+.playing .eq-bar:nth-child(3) {
+    animation: eq1 1s ease-in-out infinite alternate
+}
+
+.playing .eq-bar:nth-child(4) {
+    animation: eq1 .7s ease-in-out infinite alternate
+}
+
+.playing .eq-bar:nth-child(5) {
+    animation: eq1 .9s ease-in-out infinite alternate
+}
+
+.track-row {
+    transition: background .2s;
+    cursor: pointer
+}
+
+.track-row:hover {
+    background: rgba(139, 92, 246, .12)
+}
+
+.track-row.active {
+    background: rgba(139, 92, 246, .2);
+    border-left: 3px solid #8b5cf6
+}
+
+#visualizer {
+    border-radius: 16px;
+    opacity: .85
+}
+
+.drag-over {
+    border-color: #8b5cf6 !important;
+    background: rgba(139, 92, 246, .1) !important
+}
+
+.neon-glow {
+    box-shadow: 0 0 30px rgba(139, 92, 246, .4), 0 0 60px rgba(139, 92, 246, .15)
+}
+
+.btn-icon {
+    position: relative;
+    overflow: hidden;
+    transition: transform .15s, opacity .15s
+}
+
+.btn-icon:hover {
+    transform: scale(1.1)
+}
+
+.btn-icon:active {
+    transform: scale(.95)
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, .15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, .1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0
+}
